@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <size android:width="2dp" />
+<!-- Alternative cursor drawable that might work better on some devices -->
+<!-- Create this file in res/drawable/cursor_color.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
     <solid android:color="@color/bp_bg" />
+    <size android:width="2dp" />
 </shape>

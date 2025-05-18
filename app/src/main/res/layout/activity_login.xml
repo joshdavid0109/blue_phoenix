@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/email_usernamefield"
+                android:hint="@string/email_username_field"
                 app:startIconContentDescription="Email Icon"
                 app:startIconDrawable="@drawable/ic_person"
                 app:startIconTint="@color/bp_bg"
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/passwordfield"
+                android:hint="@string/password_field"
                 app:endIconContentDescription="Toggle password visibility"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/bp_bg"
@@ -150,7 +150,9 @@
                 android:fontFamily="@font/poppins_light"
                 android:gravity="end"
                 android:text="@string/forgot_password"
-                android:textColor="@color/bp_bg" />
+                android:textColor="@color/bp_bg"
+                android:shadowColor="@color/bp_bg"
+                android:shadowRadius="2"/>
 
         </FrameLayout>
 
@@ -171,7 +173,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/or_continue_with"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/bp_bg"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
