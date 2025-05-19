@@ -24,42 +24,43 @@
             app:srcCompat="@drawable/bp_logo"
             android:layout_gravity="end"
             android:layout_marginEnd="15dp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="10dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="69dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="10dp">
 
             <LinearLayout
-                android:layout_width="222dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="40dp"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginEnd="40dp">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="37dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/women_display_picture"
+                    app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/user_display_name"
                         android:layout_width="match_parent"
-                        android:layout_height="24dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_gravity="start"
+                        android:layout_height="30dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:fontFamily="@font/poppins_extrabold"
                         android:gravity="center_vertical"
                         android:text="@string/display_name"
@@ -73,12 +74,11 @@
                         android:fontFamily="@font/poppins_light"
                         android:text="@string/hope_you_are_doing_well"
                         android:textColor="@color/bp_name_light_blue"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
                 </LinearLayout>
-
             </LinearLayout>
-
         </FrameLayout>
+
 
         <Button
             android:id="@+id/button3"
@@ -91,6 +91,7 @@
             android:text="@string/continue_previous_session"
             android:layout_gravity="center_horizontal"/>
 
+        <!-- The second FrameLayout that we'll make scrollable -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -98,241 +99,400 @@
             android:background="@drawable/rounded_background"
             android:layout_marginTop="15dp">
 
-            <LinearLayout
+            <!-- Added ScrollView to make content scrollable -->
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:fillViewport="true">
 
                 <LinearLayout
-                    android:id="@+id/i_codals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputLayoutEmail"
-                        android:layout_width="45dp"
+                    <LinearLayout
+                        android:id="@+id/i_codals"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textInputLayoutEmail"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:textColorHint="@color/bp_bg"
+                            app:boxStrokeColor="@color/bp_bg"
+                            app:hintTextColor="@color/bp_bg"
+                            app:startIconContentDescription="Email Icon"
+                            app:startIconDrawable="@drawable/ic_book"
+                            app:startIconTint="@color/bp_bg">
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/ill_codal_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center"
+                            android:text="@string/illustrated_codals"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <!-- Responsive Placeholder Image Inside a ConstraintLayout for better control -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginLeft="30dp"
-                        android:hint="@string/email_username_field"
-                        android:textColorHint="@color/bp_bg"
-                        app:boxStrokeColor="@color/bp_bg"
-                        app:hintTextColor="@color/bp_bg"
-                        app:startIconContentDescription="Email Icon"
-                        app:startIconDrawable="@drawable/ic_book"
-                        app:startIconTint="@color/bp_bg">
+                        android:padding="16dp">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <!-- Responsive ImageView with percentage-based sizing -->
+                        <ImageView
+                            android:id="@+id/announcement_image"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:background="@drawable/announcement_board_border"
+                            android:scaleType="centerInside"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="H,250:180"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_percent="0.85"
+                            app:srcCompat="@drawable/bp_logo" />
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/illustrated_codals"
-                        android:fontFamily="@font/poppins_bold"
-                        android:textSize="18sp"
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <EditText
+                        android:id="@+id/home_search_field"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="1"
+                        android:inputType="text"
+                        android:fontFamily="@font/poppins_light"
+                        android:hint="Find"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:drawableStart="@drawable/ic_magnify"
+                        android:drawablePadding="3dp"
+                        android:background="@drawable/search_bar_border"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="4dp"
+                        android:layout_gravity="end"
                         android:textColor="@color/bp_bg"
-                        android:gravity="center"/>
-
-                    <Spinner
-                        android:id="@+id/codals_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-
-                <!-- Responsive Placeholder Image Inside a ConstraintLayout for better control -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <!-- Responsive ImageView with percentage-based sizing -->
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@drawable/announcement_board_border"
-                        android:scaleType="centerInside"
-                        app:layout_constraintWidth_percent="0.85"
-                        app:layout_constraintDimensionRatio="H,350:180"
+                        android:textColorHint="@color/gray"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:srcCompat="@drawable/bp_logo" />
+                        tools:ignore="HardcodedText" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.gridlayout.widget.GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:layout_marginTop="10dp"
+                        app:columnCount="3"
+                        app:rowCount="4"
+                        app:useDefaultMargins="true">
 
+                        <!-- Box 1: REM -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_rem"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="0"
+                            app:layout_row="0"
+                            app:layout_gravity="fill">
 
-                <EditText
-                    android:id="@+id/search_field"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:hint="Search"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
-                    android:drawableStart="@drawable/ic_magnify"
-                    android:drawablePadding="8dp"
-                    android:background="@android:color/transparent"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:layout_gravity="end"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="HardcodedText" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="REM" />
+                        </androidx.cardview.widget.CardView>
 
-                <androidx.gridlayout.widget.GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_marginTop="5dp"
-                    app:columnCount="3"
-                    app:rowCount="2"
-                    app:useDefaultMargins="true">
-
-                    <!-- Box 1: Row 0, Column 0 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box1"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
-
+                        <!-- Text below Box 1 -->
                         <TextView
+                            android:id="@+id/text_below_box1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Remedial Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="0"
+                            app:layout_row="1"
+                            app:layout_columnWeight="1" />
+
+                        <!-- Box 2: CONSTI -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_consti"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="1"
+                            app:layout_row="0"
+                            app:layout_gravity="fill">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="CONSTI" />
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Text below Box 2 -->
+                        <TextView
+                            android:id="@+id/text_below_box2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Constitutional Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="1"
+                            app:layout_row="1"
+                            app:layout_columnWeight="1" />
+
+                        <!-- Box 3: CRIM -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_crim"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="2"
+                            app:layout_row="0"
+                            app:layout_gravity="fill">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="CRIM" />
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Text below Box 3 -->
+                        <TextView
+                            android:id="@+id/text_below_box3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Criminal Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="2"
+                            app:layout_row="1"
+                            app:layout_columnWeight="1" />
+
+                        <!-- Box 4: CIV -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_civ"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="0"
+                            app:layout_row="2"
+                            app:layout_gravity="fill">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="CIV" />
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Text below Box 4 -->
+                        <TextView
+                            android:id="@+id/text_below_box4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Civil Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="0"
+                            app:layout_row="3"
+                            app:layout_columnWeight="1" />
+
+                        <!-- Box 5: COMM -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_comm"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="1"
+                            app:layout_row="2"
+                            app:layout_gravity="fill">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="COMM" />
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Text below Box 5 -->
+                        <TextView
+                            android:id="@+id/text_below_box5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Commercial Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="1"
+                            app:layout_row="3"
+                            app:layout_columnWeight="1" />
+
+                        <!-- Box 6: TAX -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/home_tax"
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:backgroundTint="@color/bp_bg"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="2dp"
+                            app:layout_columnWeight="1"
+                            app:layout_column="2"
+                            app:layout_row="2"
+                            app:layout_gravity="fill">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/bp_name_light_blue"
+                                android:fontFamily="@font/poppins_bold"
+                                android:textSize="25sp"
+                                android:text="TAX" />
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Text below Box 6 -->
+                        <TextView
+                            android:id="@+id/text_below_box6"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Taxation Law"
+                            android:textAlignment="center"
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp"
+                            app:layout_column="2"
+                            app:layout_row="3"
+                            app:layout_columnWeight="1" />
+
+                    </androidx.gridlayout.widget.GridLayout>
+
+                    <!-- Footer Section with fixes for small screens -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:scrollbars="none">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="REM" />
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="vertical">
 
-                    </androidx.cardview.widget.CardView>
+                            <LinearLayout
+                                android:id="@+id/home_web_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_gravity="center">
 
-                    <!-- Box 2: Row 0, Column 1 -->
+                                <TextView
+                                    android:id="@+id/web_icon"
+                                    android:layout_width="22dp"
+                                    android:layout_height="20dp"
+                                    android:tint="@color/bp_name_light_blue"
+                                    app:drawableStartCompat="@drawable/ic_web" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box2"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
+                                <TextView
+                                    android:id="@+id/textView5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:textSize="13sp"
+                                    android:text="@string/www_bluephoenix_com"
+                                    android:textColor="@color/bp_bg"
+                                    android:layout_gravity="center" />
+                            </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="CONSTI" />
-                    </androidx.cardview.widget.CardView>
+                            <LinearLayout
+                                android:id="@+id/home_fb_link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginStart="10dp"> <!-- spacing between sections -->
 
-                    <!-- Box 3: Row 0, Column 2 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box3"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
+                                <TextView
+                                    android:id="@+id/fb_icon"
+                                    android:layout_width="22dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="2dp"
+                                    android:tint="@color/bp_name_light_blue"
+                                    app:drawableStartCompat="@drawable/ic_fb" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="CRIM" />
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- Box 4: Row 1, Column 0 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box4"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="CIV" />
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- Box 5: Row 1, Column 1 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box5"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center" android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="COMM" />
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- Box 6: Row 1, Column 2 -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/box6"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
-                        android:backgroundTint="@color/bp_bg"
-                        app:cardCornerRadius="15dp"
-                        app:cardElevation="2dp"
-                        app:layout_columnWeight="1"
-                        app:layout_gravity="fill"
-                        app:layout_rowWeight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/bp_name_light_blue"
-                            android:fontFamily="@font/poppins_bold"
-                            android:textSize="25sp"
-                            android:text="TAX" />
-                    </androidx.cardview.widget.CardView>
-
-                </androidx.gridlayout.widget.GridLayout>
-
-            </LinearLayout>
-
+                                <TextView
+                                    android:id="@+id/textView7"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="3dp"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/bp_bg"
+                                    android:text="@string/blue_phoenix_illustrated_reviewers"
+                                    tools:ignore="SmallSp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </ScrollView>
         </FrameLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

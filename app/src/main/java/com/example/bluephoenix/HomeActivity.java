@@ -1,111 +1,29 @@
 package com.example.bluephoenix;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeActivity extends AppCompatActivity {
+    private TextView welcomeTextView;
+    private FirebaseFirestore db; // Use FirebaseFirestore
+    private CardView cardViewRem;
 
-    private void setupSpinner() {
-        // Get reference to your spinner
-        Spinner spinner = findViewById(R.id.codals_more);
-
-        // Create an ArrayList of items
-        ArrayList<String> items = new ArrayList<>();
-        items.add("Item 1");
-        items.add("Item 2");
-        items.add("Item 3");
-
-        // Create an ArrayAdapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                items
-        );
-
-        // Set the adapter to the spinner
-        spinner.setAdapter(adapter);
-    }
-
-    // 2. Editing a specific item
-    private void editSpinnerItem(int position, String newValue) {
-        Spinner spinner = findViewById(R.id.codals_more);
-
-        // Get the adapter and cast it to the appropriate type
-        @SuppressWarnings("unchecked")
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
-
-        // Remove the old item and insert the new one at the same position
-        adapter.remove(adapter.getItem(position));
-        adapter.insert(newValue, position);
-
-        // Notify the adapter that data has changed
-        adapter.notifyDataSetChanged();
-    }
-
-    // 3. Adding a new item
-    private void addSpinnerItem(String newItem) {
-        Spinner spinner = findViewById(R.id.codals_more);
-
-        @SuppressWarnings("unchecked")
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
-
-        // Add the new item
-        adapter.add(newItem);
-
-        // Notify the adapter that data has changed
-        adapter.notifyDataSetChanged();
-    }
-
-    // 4. Removing an item
-    private void removeSpinnerItem(int position) {
-        Spinner spinner = findViewById(R.id.codals_more);
-
-        @SuppressWarnings("unchecked")
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
-
-        // Remove the item at the specified position
-        adapter.remove(adapter.getItem(position));
-
-        // Notify the adapter that data has changed
-        adapter.notifyDataSetChanged();
-    }
-
-    // 5. Replacing all items
-    private void replaceAllSpinnerItems(ArrayList<String> newItems) {
-        Spinner spinner = findViewById(R.id.codals_more);
-
-        // Create a new adapter with the new items
-        ArrayAdapter<String> newAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                newItems
-        );
-
-        // Set the new adapter
-        spinner.setAdapter(newAdapter);
-    }
-
-    // 6. Getting the current selected item
-    private String getSelectedItem() {
-        Spinner spinner = findViewById(R.id.codals_more);
-        return spinner.getSelectedItem().toString();
-    }
-
-    // 7. Setting a specific item as selected
-    private void setSelectedItem(int position) {
-        Spinner spinner = findViewById(R.id.codals_more);
-        spinner.setSelection(position);
-    }
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,13 +35,51 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initial setup
-        setupSpinner();
+        welcomeTextView = findViewById(R.id.user_display_name);
+        cardViewRem = findViewById(R.id.home_rem);
 
-        // Example: Edit an item after 2 seconds
-        new Handler().postDelayed(() -> {
-            editSpinnerItem(1, "Updated Item 2");
-        }, 2000);
+        String userId = getIntent().getStringExtra("USER_ID");
 
+        db = FirebaseFirestore.getInstance(); // Initialize Firestore
+
+        if (userId != null) {
+            cardViewRem.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+                startActivity(intent);
+                finish();
+            });
+
+            // Now use Firestore to fetch the user's data
+            fetchUserData(userId);
+        } else {
+            // Handle the case where no user ID was passed
+            welcomeTextView.setText("Error: Could not retrieve user information.");
+        }
+    }
+
+    private void fetchUserData(String userId) {
+        DocumentReference userRef = db.collection("users").document(userId);
+
+        userRef.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String email = document.getString("email");
+                            String name = document.getString("name");
+                            String role = document.getString("role");
+
+                            welcomeTextView.setText("Hello, " + name);
+                            Log.d("HomeActivity", "User Data (Firestore): Email - " + email + ", Name - " + name + ", Role - " + role);
+                            // You can now use this data to populate your UI
+                        } else {
+                            welcomeTextView.setText("Welcome!"); // Or handle the case where user data is missing
+                            Log.w("HomeActivity", "No user data found in Firestore for this UID.");
+                        }
+                    } else {
+                        welcomeTextView.setText("Welcome!"); // Or handle the error
+                        Log.e("HomeActivity", "Error fetching user data from Firestore: " + task.getException());
+                    }
+                });
     }
 }

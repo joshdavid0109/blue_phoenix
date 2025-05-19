@@ -10,6 +10,10 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 viewpager2 = "1.0.0"
 gridlayout = "1.1.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseAuth = "23.2.0"
+firebaseDatabase = "21.0.0"
+firebaseFirestore = "25.0.0" # Added version for firebase-firestore
 
 [libraries]
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
@@ -22,7 +26,11 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "gridlayout" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-database = { name = "com.google.firebase", module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" } # Added firebase-firestore
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }

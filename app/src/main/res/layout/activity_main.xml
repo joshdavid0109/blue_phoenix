@@ -115,7 +115,7 @@
                 app:selectedDotColor="@color/bp_bg" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/myButton"
+                android:id="@+id/getStartedBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
@@ -124,7 +124,7 @@
                 android:textColor="@color/bp_bg"
                 app:cornerRadius="8dp"
                 app:strokeColor="@color/bp_bg"
-                app:strokeWidth="3dp" />
+                app:strokeWidth="2dp" />
         </LinearLayout>
     </FrameLayout>
 

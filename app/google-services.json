@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855429425240",
+    "project_id": "bluephx-3ee80",
+    "storage_bucket": "bluephx-3ee80.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855429425240:android:f9505e8d8fc7309964022d",
+        "android_client_info": {
+          "package_name": "com.example.bluephoenix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANSBzmW2VWMKOTFjMBUtl2cicqB-a0iPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -101,7 +101,7 @@
                 app:boxStrokeColor="@color/bp_bg">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextTextEmailAddress"
+                    android:id="@+id/email_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/white"
@@ -130,7 +130,7 @@
                 app:boxStrokeColor="@color/bp_bg">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextTextPassword"
+                    android:id="@+id/password_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/white"
@@ -158,7 +158,7 @@
 
 
         <Button
-            android:id="@+id/loginuserBtn"
+            android:id="@+id/loginUserBtn"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/bp_name_light_blue"
