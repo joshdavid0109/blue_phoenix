@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:orientation="vertical"
-                   >
+                    >
 
                     <TextView
                         android:id="@+id/user_display_name"
@@ -136,17 +136,39 @@
                         app:startIconTint="@color/bp_bg">
 
                     </com.google.android.material.textfield.TextInputLayout>
-                    <TextView
-                        android:id="@+id/codal_title_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginStart="10dp"
-                        android:fontFamily="@font/poppins_bold"
-                        android:gravity="center"
-                        android:text="@string/reviewer_title_remedial_law"
-                        android:textColor="@color/bp_bg"
-                        android:textSize="18sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/codal_title_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center_vertical"
+                            android:text="Civil Procedure"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/codal_title_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginEnd="184dp"
+                            android:layout_marginBottom="0dp"
+                            android:fontFamily="@font/poppins_light"
+                            android:text="@string/reviewer_title_remedial_law"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="12sp" />
+
+                    </RelativeLayout>
+
 
                     <!--                    <Spinner-->
                     <!--                        android:id="@+id/codals_more"-->
@@ -178,7 +200,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:textColor="@color/white"
-                                android:text="@string/rem_general_principles" />
+                                android:text="@string/rem_content_rules_of_civil_procedure" />
 
                             <Button
                                 android:id="@+id/reviewer_button2"
@@ -186,7 +208,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:textColor="@color/white"
-                                android:text="@string/rem_jurisdiction" />
+                                android:text="@string/rem_content_provisional_remedies" />
 
                             <Button
                                 android:id="@+id/reviewer_button3"
@@ -194,50 +216,8 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:textColor="@color/white"
-                                android:text="@string/rem_civil_procedure" />
-                            <Button
-                                android:id="@+id/reviewer_button4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:textColor="@color/white"
-                                android:text="@string/rem_criminal_procedure" />
+                                android:text="@string/rem_content_special_civil_actions" />
 
-                            <Button
-                                android:id="@+id/reviewer_button5"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:text="@string/rem_evidence"
-                                android:textColor="@color/white" />
-                            <Button
-                                android:id="@+id/reviewer_button6"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:text="@string/rem_special_proceedings"
-                                android:textColor="@color/white" />
-                            <Button
-                                android:id="@+id/reviewer_button7"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:text="SPECIAL CIVIL ACTIONS"
-                                android:textColor="@color/white" />
-                            <Button
-                                android:id="@+id/reviewer_button8"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:text="JUDICIAL ETHICS"
-                                android:textColor="@color/white" />
-                            <Button
-                                android:id="@+id/reviewer_button9"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins_semibold"
-                                android:text="CPRA"
-                                android:textColor="@color/white" />
                         </LinearLayout>
 
                         <!-- Footer Section with fixes for small screens -->

@@ -17,14 +17,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="51dp"
-            android:layout_height="51dp"
-            app:srcCompat="@drawable/bp_logo"
-            android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/logOut_ic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                app:startIconContentDescription="Email Icon"
+                app:startIconDrawable="@drawable/ic_out"
+                app:startIconTint="@color/bp_name_light_blue"
+                />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="51dp"
+                android:layout_height="51dp"
+                android:contentDescription="@string/logo"
+                app:srcCompat="@drawable/bp_logo"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"/>
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -233,7 +252,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="0"
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
@@ -270,7 +289,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="1"
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
@@ -307,7 +326,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="2"
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
@@ -344,7 +363,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="0"
                             app:layout_row="3"
                             app:layout_columnWeight="1" />
@@ -381,7 +400,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="1"
                             app:layout_row="3"
                             app:layout_columnWeight="1" />
@@ -418,7 +437,7 @@
                             android:textAlignment="center"
                             android:fontFamily="@font/poppins_light"
                             android:textColor="@color/bp_bg"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             app:layout_column="2"
                             app:layout_row="3"
                             app:layout_columnWeight="1" />

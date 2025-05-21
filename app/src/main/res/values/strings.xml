@@ -16,7 +16,7 @@
     <string name="password_field">Password</string>
     <string name="email_username_field">Email/Username</string>
     <string name="confirm_password_field">Confirm Password</string>
-    <string name="display_name">Hello Juan, </string>
+    <string name="display_name">Hello, </string>
     <string name="hope_you_are_doing_well">Hope you are doing well!</string>
     <string name="continue_previous_session">continue previous session</string>
     <string name="illustrated_codals">Illustrated Codals</string>
@@ -24,4 +24,16 @@
     <string name="blue_phoenix_illustrated_reviewers">Blue Phoenix Illustrated Reviewers</string>
     <string name="reviewer_title_remedial_law">Remedial Law</string>
     <string name="reviewer_main_title">Illustrated Codals</string>
+    <string name="blphx_logo">blphx_logo</string>
+    <string name="rem_general_principles">GENERAL PRINCIPLES</string>
+    <string name="rem_jurisdiction">JURISDICTION</string>
+    <string name="rem_civil_procedure">CIVIL PROCEDURE</string>
+    <string name="rem_criminal_procedure">CRIMINAL PROCEDURE</string>
+    <string name="rem_evidence">EVIDENCE</string>
+    <string name="rem_special_proceedings">SPECIAL PROCEEDINGS</string>
+    <string name="default_web_client_id">855429425240-o0iqmtqdebogudh3r881sj5f47988t7g.apps.googleusercontent.com</string>
+    <string name="logo">logo</string>
+    <string name="rem_content_rules_of_civil_procedure">Rules of civil procedure</string>
+    <string name="rem_content_provisional_remedies">provisional remedies</string>
+    <string name="rem_content_special_civil_actions">special civil actions</string>
 </resources>
