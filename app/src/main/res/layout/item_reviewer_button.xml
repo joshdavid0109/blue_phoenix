@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"> <Button
+    android:id="@+id/reviewer_button_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/poppins_semibold"
+    android:textColor="@color/white"
+    android:background="@drawable/button_round_corners"
+    tools:text="Dynamic Button Text" />
+
+</LinearLayout>

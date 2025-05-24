@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout" tools:openDrawer="start"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
-    android:background="@color/bp_bg">
+    android:fitsSystemWindows="true"
+    tools:context=".HomeActivity">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/bp_bg">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/menu_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:contentDescription="Menu Icon"
+                android:src="@drawable/ic_side_bar"
+                app:tint="@color/bp_name_light_blue" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/logOut_ic"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/menu_icon"
+                android:layout_centerVertical="true"
                 app:startIconContentDescription="Email Icon"
                 app:startIconDrawable="@drawable/ic_out"
                 app:startIconTint="@color/bp_name_light_blue"
-                />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="51dp"
                 android:layout_height="51dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:contentDescription="@string/logo"
                 app:srcCompat="@drawable/bp_logo"
-                android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"/>
-        </LinearLayout>
+        </RelativeLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -110,7 +119,6 @@
             android:text="@string/continue_previous_session"
             android:layout_gravity="center_horizontal"/>
 
-        <!-- The second FrameLayout that we'll make scrollable -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -118,7 +126,6 @@
             android:background="@drawable/rounded_background"
             android:layout_marginTop="15dp">
 
-            <!-- Added ScrollView to make content scrollable -->
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -164,13 +171,11 @@
                             android:textSize="18sp" />
                     </LinearLayout>
 
-                    <!-- Responsive Placeholder Image Inside a ConstraintLayout for better control -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp">
 
-                        <!-- Responsive ImageView with percentage-based sizing -->
                         <ImageView
                             android:id="@+id/announcement_image"
                             android:layout_width="0dp"
@@ -220,7 +225,6 @@
                         app:rowCount="4"
                         app:useDefaultMargins="true">
 
-                        <!-- Box 1: REM -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_rem"
                             android:layout_width="0dp"
@@ -243,7 +247,6 @@
                                 android:text="REM" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 1 -->
                         <TextView
                             android:id="@+id/text_below_box1"
                             android:layout_width="0dp"
@@ -257,7 +260,6 @@
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
 
-                        <!-- Box 2: CONSTI -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_consti"
                             android:layout_width="0dp"
@@ -280,7 +282,6 @@
                                 android:text="CONSTI" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 2 -->
                         <TextView
                             android:id="@+id/text_below_box2"
                             android:layout_width="0dp"
@@ -294,7 +295,6 @@
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
 
-                        <!-- Box 3: CRIM -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_crim"
                             android:layout_width="0dp"
@@ -317,7 +317,6 @@
                                 android:text="CRIM" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 3 -->
                         <TextView
                             android:id="@+id/text_below_box3"
                             android:layout_width="0dp"
@@ -331,7 +330,6 @@
                             app:layout_row="1"
                             app:layout_columnWeight="1" />
 
-                        <!-- Box 4: CIV -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_civ"
                             android:layout_width="0dp"
@@ -354,7 +352,6 @@
                                 android:text="CIV" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 4 -->
                         <TextView
                             android:id="@+id/text_below_box4"
                             android:layout_width="0dp"
@@ -368,7 +365,6 @@
                             app:layout_row="3"
                             app:layout_columnWeight="1" />
 
-                        <!-- Box 5: COMM -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_comm"
                             android:layout_width="0dp"
@@ -391,7 +387,6 @@
                                 android:text="COMM" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 5 -->
                         <TextView
                             android:id="@+id/text_below_box5"
                             android:layout_width="0dp"
@@ -405,7 +400,6 @@
                             app:layout_row="3"
                             app:layout_columnWeight="1" />
 
-                        <!-- Box 6: TAX -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/home_tax"
                             android:layout_width="0dp"
@@ -428,7 +422,6 @@
                                 android:text="TAX" />
                         </androidx.cardview.widget.CardView>
 
-                        <!-- Text below Box 6 -->
                         <TextView
                             android:id="@+id/text_below_box6"
                             android:layout_width="0dp"
@@ -444,7 +437,6 @@
 
                     </androidx.gridlayout.widget.GridLayout>
 
-                    <!-- Footer Section with fixes for small screens -->
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -488,15 +480,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:layout_marginStart="10dp"> <!-- spacing between sections -->
-
-                                <TextView
-                                    android:id="@+id/fb_icon"
-                                    android:layout_width="22dp"
-                                    android:layout_height="20dp"
-                                    android:layout_marginStart="2dp"
-                                    android:tint="@color/bp_name_light_blue"
-                                    app:drawableStartCompat="@drawable/ic_fb" />
+                                android:layout_marginStart="10dp"> <TextView
+                                android:id="@+id/fb_icon"
+                                android:layout_width="22dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="2dp"
+                                android:tint="@color/bp_name_light_blue"
+                                app:drawableStartCompat="@drawable/ic_fb" />
 
                                 <TextView
                                     android:id="@+id/textView7"
@@ -514,4 +504,18 @@
             </ScrollView>
         </FrameLayout>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="@color/white"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer"
+        app:itemTextAppearance="@style/NavigationViewTextStyle"
+        app:subheaderTextAppearance="@style/NavigationViewTextTitleStyle"
+        app:itemTextColor="@color/black"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

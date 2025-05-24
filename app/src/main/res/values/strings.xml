@@ -36,4 +36,6 @@
     <string name="rem_content_rules_of_civil_procedure">Rules of civil procedure</string>
     <string name="rem_content_provisional_remedies">provisional remedies</string>
     <string name="rem_content_special_civil_actions">special civil actions</string>
+    <string name="peer_review_and_discussion">Peer Review and Discussion</string>
+    <string name="forum_name_date_separator"> • </string>
 </resources>

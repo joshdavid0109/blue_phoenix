@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,9 +18,11 @@ import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.bluephoenix.fragments.GetUserNameDialogFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +30,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class HomeActivity extends AppCompatActivity implements GetUserNameDialogFragment.NameInputDialogListener {
+public class HomeActivity extends AppCompatActivity implements GetUserNameDialogFragment.NameInputDialogListener, NavigationView.OnNavigationItemSelectedListener {
     private TextView welcomeTextView;
-    private FirebaseFirestore db; // Use FirebaseFirestore
+    private FirebaseFirestore db;
     private CardView cardViewRem;
     private TextInputLayout logOutBtn;
     private FirebaseAuth mAuth;
@@ -35,6 +40,9 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private String currentFirstName; // To store the fetched/entered name
     private String currentUserId; // Store the userId
 
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ImageView menuIcon;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -48,14 +56,30 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             return insets;
         });
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        menuIcon = findViewById(R.id.menu_icon);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        menuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(navigationView)) {
+                    drawerLayout.closeDrawer(navigationView);
+                } else {
+                    drawerLayout.openDrawer(navigationView);
+                }
+            }
+        });
+
         welcomeTextView = findViewById(R.id.user_display_name);
         cardViewRem = findViewById(R.id.home_rem);
         logOutBtn = findViewById(R.id.logOut_ic);
 
-        db = FirebaseFirestore.getInstance(); // Initialize Firestore
-        mAuth = FirebaseAuth.getInstance(); // Initialize FirebaseAuth
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        // Get userId from Intent *first*
         String userIdFromIntent = getIntent().getStringExtra("USER_ID");
         String firstNameFromIntent = getIntent().getStringExtra("FIRST_NAME");
         isNewUser = getIntent().getBooleanExtra("IS_NEW_USER", false);
@@ -70,12 +94,12 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             } else if (currentFirstName != null) {
                 welcomeTextView.setText(currentFirstName);
             } else if (currentUserId != null) {
-                fetchUserData(currentUserId); // Fetch again if name not restored but ID is
+                fetchUserData(currentUserId);
             } else {
                 welcomeTextView.setText("Error: Could not retrieve user information.");
             }
         } else if (userIdFromIntent != null) {
-            currentUserId = userIdFromIntent; // Assign from Intent
+            currentUserId = userIdFromIntent;
             Log.d("HomeActivity", "onCreate() - userId from Intent: " + currentUserId + ", firstName: " + firstNameFromIntent + ", isNewUser: " + isNewUser);
             if (isNewUser) {
                 showGetUserNameDialog();
@@ -83,10 +107,9 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 currentFirstName = firstNameFromIntent;
                 welcomeTextView.setText("Hello, " + currentFirstName);
             } else {
-                fetchUserData(currentUserId); // Fetch data if no firstName was passed
+                fetchUserData(currentUserId);
             }
         } else {
-            // Handle the case where no user ID was passed
             welcomeTextView.setText("Error: Could not retrieve user information.");
         }
 
@@ -115,7 +138,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
         if (currentUserId != null && (currentFirstName == null || currentFirstName.isEmpty() || welcomeTextView.getText().toString().startsWith("Welcome") || welcomeTextView.getText().toString().contains("Error"))) {
             Log.d("HomeActivity", "onResume() - Calling fetchUserData()");
-            fetchUserData(currentUserId); // Re-fetch if name is missing or error occurred
+            fetchUserData(currentUserId);
         }
         Log.d("HomeActivity", "onResume() - Finished");
     }
@@ -134,11 +157,11 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             FirebaseUser user = mAuth.getCurrentUser();
             if (user != null) {
                 updateUserNameInFirestore(user.getUid(), name);
-                currentUserId = user.getUid(); // Ensure userId is stored
+                currentUserId = user.getUid();
                 Log.d("HomeActivity", "onNameEntered() - Name entered: " + name + ", updated UI and Firestore, currentUserId: " + currentUserId);
             }
         } else {
-            welcomeTextView.setText("Hello!"); // Or handle the case where the user cancels/enters nothing
+            welcomeTextView.setText("Hello!");
             Log.d("HomeActivity", "onNameEntered() - Empty name entered");
         }
     }
@@ -189,5 +212,51 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                         Log.e("HomeActivity", "fetchUserData() - Error: " + task.getException());
                     }
                 });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        Intent intent = null; // Declare intent here
+
+        if (id == R.id.nav_home) {
+            // Already in HomeActivity, no navigation needed
+            Toast.makeText(this, "You are already on Home screen.", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_gallery) { // Calendar
+            // intent = new Intent(HomeActivity.this, CalendarActivity.class);
+        } else if (id == R.id.nav_slideshow) { // Peer Review and Discussion (Forum)
+            intent = new Intent(HomeActivity.this, ForumActivity.class);
+            if (currentUserId != null) {
+                intent.putExtra("USER_ID", currentUserId);
+                Log.d("HomeActivity", "Passing USER_ID to ForumActivity: " + currentUserId);
+            }
+            if (currentFirstName != null) {
+                intent.putExtra("USER_NAME", currentFirstName);
+                Log.d("HomeActivity", "Passing USER_NAME to ForumActivity: " + currentFirstName);
+            }
+            // ------------------------------------
+        } else if (id == R.id.nav_share) { // About Us
+            // intent = new Intent(HomeActivity.this, AboutUsActivity.class);
+        } else if (id == R.id.nav_send) { // FAQs
+            // intent = new Intent(HomeActivity.this, FAQsActivity.class);
+        }
+
+        if (intent != null) {
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+
+        drawerLayout.closeDrawer(navigationView); // Use navigationView directly as it's initialized
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(navigationView)) { // Use navigationView directly
+            drawerLayout.closeDrawer(navigationView);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

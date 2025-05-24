@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">@color/bp_name_light_blue</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="NavigationViewTextStyle">
+        <item name="android:fontFamily">@font/poppins_light</item> <item name="android:textSize">16sp</item> <item name="android:textColor">@color/bp_bg</item>
+    </style>
+    <style name="NavigationViewTextTitleStyle">
+        <item name="android:fontFamily">@font/poppins_semibold</item> <item name="android:textSize">16sp</item> <item name="android:textColor">@color/gray</item>
+    </style>
 </resources>
