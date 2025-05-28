@@ -5,12 +5,11 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ForumActivity"
-    tools:openDrawer="start">
+    android:fitsSystemWindows="true"
+    tools:context=".ForumPostDetailActivity"  tools:openDrawer="start">
 
     <LinearLayout
-        android:id="@+id/main"
-        android:layout_width="match_parent"
+        android:id="@+id/main_content_layout"  android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bp_bg"
         android:orientation="vertical">
@@ -59,6 +58,7 @@
             android:layout_height="69dp"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp">
+
             <LinearLayout
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
@@ -128,8 +128,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText" />
-
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -137,143 +135,156 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_background">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_refresh_layout"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
-                <ScrollView
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fillViewport="true">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <EditText
+                            android:id="@+id/back_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:drawableStart="@drawable/ic_arrow_back"
+                            android:ems="1"
+                            android:fontFamily="@font/poppins_light"
+                            android:paddingStart="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="8dp"
+                            android:textColor="@color/bp_bg"
+                            android:background="@null" app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="HardcodedText" />
+                        <TextView
+                            android:id="@+id/detail_post_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_extrabold"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="24sp"
+                            android:text="Post Title Goes Here"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
-                        <LinearLayout
-                            android:id="@+id/i_codals"
-                            android:layout_width="match_parent"
-                            android:layout_height="54dp"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/textInputLayoutEmail"
-                                android:layout_width="45dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="30dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginBottom="8dp"
-                                android:textColorHint="@color/bp_bg"
-                                app:boxStrokeColor="@color/bp_bg"
-                                app:hintTextColor="@color/bp_name_light_blue"
-                                app:startIconContentDescription="Email Icon"
-                                app:startIconDrawable="@drawable/ic_book"
-                                app:startIconTint="@color/bp_bg">
-
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <TextView
-                                android:id="@+id/ill_codal_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/poppins_bold"
-                                android:gravity="center"
-                                android:text="@string/peer_review_and_discussion"
-                                android:textColor="@color/bp_bg"
-                                android:textSize="18sp" />
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/post_btn"
+                        <TextView
+                            android:id="@+id/detail_author"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="POST A QUESTION"
-                            android:textColor="@color/white"
-                            android:backgroundTint="@color/bp_bg">
-                        </Button>
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/gray"
+                            android:textSize="14sp"
+                            android:text="By Author Name" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/forum_recycler_view"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/detail_post_date"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"
-                            android:padding="8dp"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:listitem="@layout/item_forum_post" /> <HorizontalScrollView
+                            android:fontFamily="@font/poppins_light"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp"
+                            android:text=" • Date Here"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/detail_post_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:scrollbars="none">
+                        android:fontFamily="@font/poppins_light"
+                        android:textColor="@color/bp_bg"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="This is the full content of the forum post. It can be quite long and detailed, explaining various legal principles or answering questions in depth. Users can read the entire post here."
+                        android:layout_marginBottom="24dp" />
 
-                        <LinearLayout
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_comment"
+                            android:contentDescription="Comments Icon" />
+
+                        <TextView
+                            android:id="@+id/detail_comments_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:id="@+id/home_web_link"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/web_icon"
-                                    android:layout_width="22dp"
-                                    android:layout_height="20dp"
-                                    app:drawableStartCompat="@drawable/ic_web"
-                                    app:tint="@color/bp_name_light_blue" />
-
-                                <TextView
-                                    android:id="@+id/textView5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginStart="5dp"
-                                    android:text="@string/www_bluephoenix_com"
-                                    android:textColor="@color/bp_bg"
-                                    android:textSize="13sp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/home_fb_link"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/fb_icon"
-                                    android:layout_width="22dp"
-                                    android:layout_height="20dp"
-                                    android:layout_marginStart="2dp"
-                                    app:drawableStartCompat="@drawable/ic_fb"
-                                    app:tint="@color/bp_name_light_blue" />
-
-                                <TextView
-                                    android:id="@+id/textView7"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="3dp"
-                                    android:text="@string/blue_phoenix_illustrated_reviewers"
-                                    android:textColor="@color/bp_bg"
-                                    android:textSize="13sp"
-                                    tools:ignore="SmallSp" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </HorizontalScrollView>
-
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="18sp"
+                            android:text="0 Comments" />
                     </LinearLayout>
-                </ScrollView>
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/comments_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:clipToPadding="false"
+                        android:paddingBottom="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_comment" />
+                </LinearLayout>
+            </ScrollView>
         </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="@color/bp_bg"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/comment_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Add a comment..."
+                android:textColorHint="@color/gray"
+                android:textColor="@color/white"
+                android:background="@drawable/search_bar_border"
+                android:padding="10dp"
+                android:maxLines="4"
+                android:inputType="textMultiLine"
+                android:fontFamily="@font/poppins_light" />
+
+            <Button
+                android:id="@+id/post_comment_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Post"
+                android:fontFamily="@font/poppins_semibold"
+                android:backgroundTint="@color/bp_name_light_blue"
+                android:textColor="@color/bp_bg" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

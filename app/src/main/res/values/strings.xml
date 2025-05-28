@@ -5,7 +5,9 @@
     <string name="welcome">Welcome</string>
     <string name="get_started">Get Started</string>
     <string name="welcome_back">Welcome Back</string>
+    <string name="registration_title">Registration</string>
     <string name="sign_in_to_continue_using_the_app">Sign in to continue using the app</string>
+    <string name="registration">Create your account</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -38,4 +40,8 @@
     <string name="rem_content_special_civil_actions">special civil actions</string>
     <string name="peer_review_and_discussion">Peer Review and Discussion</string>
     <string name="forum_name_date_separator"> • </string>
+    <string name="nav_header_title">User Name Here</string>
+    <string name="nav_header_subtitle">user.email@example.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_logout">Log out</string>
 </resources>

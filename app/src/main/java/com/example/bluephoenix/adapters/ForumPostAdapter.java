@@ -1,52 +1,59 @@
-// src/main/java/com/example/bluephoenix/adapters/ForumPostAdapter.java
-package com.example.bluephoenix.adapters; // Adjust package as needed
+package com.example.bluephoenix.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ImageView; // Ensure ImageView is imported if you use it for comments icon etc.
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bluephoenix.R; // Make sure this R points to your app's R file
-import com.example.bluephoenix.models.ForumPost; // Import your data model
+import com.example.bluephoenix.R; // Make sure your R file is correctly imported
+import com.example.bluephoenix.models.ForumPost;
 
 import java.util.List;
 
 public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.ForumPostViewHolder> {
 
     private List<ForumPost> forumPosts;
+    private OnItemClickListener listener; // Declare the listener
+
+    // Interface for click events
+    public interface OnItemClickListener {
+        void onItemClick(ForumPost post);
+    }
 
     public ForumPostAdapter(List<ForumPost> forumPosts) {
         this.forumPosts = forumPosts;
     }
 
+    // Setter for the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public ForumPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the single item layout
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_forum_post, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_forum_post, parent, false);
         return new ForumPostViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ForumPostViewHolder holder, int position) {
-        // Get the data for the current position
-        ForumPost currentPost = forumPosts.get(position);
+        ForumPost post = forumPosts.get(position);
+        holder.forumPostTitle.setText(post.getTitle());
+        holder.forumAuthor.setText("By " + post.getAuthor());
+        holder.forumPostDate.setText(" • " + post.getDate());
+        holder.padNumberOfComments.setText(String.valueOf(post.getNumberOfComments()));
+        holder.forumPostContent.setText(post.getMessage());
 
-        // Bind the data to the views in the ViewHolder
-        holder.titleTextView.setText(currentPost.getTitle());
-        holder.authorTextView.setText(currentPost.getAuthor());
-        holder.dateTextView.setText(currentPost.getDate());
-        holder.commentCountTextView.setText(String.valueOf(currentPost.getCommentCount()));
-
-        // You might want to add a click listener here for each item
+        // Set the click listener on the entire item view
         holder.itemView.setOnClickListener(v -> {
-            // Handle item click, e.g., open a detailed post view
-            // Toast.makeText(v.getContext(), "Clicked: " + currentPost.getTitle(), Toast.LENGTH_SHORT).show();
+            if (listener != null) {
+                listener.onItemClick(post); // Notify the listener when an item is clicked
+            }
         });
     }
 
@@ -55,25 +62,28 @@ public class ForumPostAdapter extends RecyclerView.Adapter<ForumPostAdapter.Foru
         return forumPosts.size();
     }
 
-    public static class ForumPostViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView authorTextView;
-        TextView dateTextView;
-        TextView commentCountTextView;
-        ImageView commentsIcon;
+    public void updateData(List<ForumPost> newPosts) {
+        this.forumPosts = newPosts;
+        notifyDataSetChanged(); // Notify the adapter that the data has changed
+    }
+
+    static class ForumPostViewHolder extends RecyclerView.ViewHolder {
+        TextView forumPostTitle;
+        TextView forumAuthor;
+        TextView forumPostDate;
+        TextView padNumberOfComments;
+        ImageView iconComments; // If you have an icon for comments
+
+        TextView forumPostContent;
 
         public ForumPostViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.forum_post_title);
-            authorTextView = itemView.findViewById(R.id.forum_author);
-            dateTextView = itemView.findViewById(R.id.forum_post_date);
-            commentCountTextView = itemView.findViewById(R.id.pad_number_of_comments);
-            commentsIcon = itemView.findViewById(R.id.icon_comments);
+            forumPostTitle = itemView.findViewById(R.id.forum_post_title);
+            forumAuthor = itemView.findViewById(R.id.forum_author);
+            forumPostDate = itemView.findViewById(R.id.forum_post_date);
+            padNumberOfComments = itemView.findViewById(R.id.pad_number_of_comments);
+            iconComments = itemView.findViewById(R.id.icon_comments);
+            forumPostContent = itemView.findViewById(R.id.forum_post_full_content_hidden);
         }
-    }
-    public void updateData(List<ForumPost> newPosts) {
-        this.forumPosts.clear();
-        this.forumPosts.addAll(newPosts);
-        notifyDataSetChanged();
     }
 }

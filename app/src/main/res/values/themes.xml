@@ -19,4 +19,9 @@
     <style name="NavigationViewTextTitleStyle">
         <item name="android:fontFamily">@font/poppins_semibold</item> <item name="android:textSize">16sp</item> <item name="android:textColor">@color/gray</item>
     </style>
+
+    <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

@@ -44,7 +44,9 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private NavigationView navigationView;
     private ImageView menuIcon;
 
-    @SuppressLint("SetTextI18n")
+    private TextView nav_username_display;
+
+    @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         menuIcon = findViewById(R.id.menu_icon);
 
         navigationView.setNavigationItemSelectedListener(this);
+        // Correct way to find the TextView inside the navigation header
+        View headerView = navigationView.getHeaderView(0); // Get the first header view
+        nav_username_display = headerView.findViewById(R.id.nav_header_title);
+
 
         menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +97,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             Log.d("HomeActivity", "onCreate() - Restored currentFirstName: " + currentFirstName + ", currentUserId: " + currentUserId);
             if (currentFirstName != null && !currentFirstName.startsWith("Hello")) {
                 welcomeTextView.setText("Hello, " + currentFirstName);
+                // Set the nav header name here too
+                if (nav_username_display != null) {
+                    nav_username_display.setText(currentFirstName);
+                }
             } else if (currentFirstName != null) {
                 welcomeTextView.setText(currentFirstName);
             } else if (currentUserId != null) {
@@ -106,6 +116,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             } else if (firstNameFromIntent != null && !firstNameFromIntent.isEmpty()) {
                 currentFirstName = firstNameFromIntent;
                 welcomeTextView.setText("Hello, " + currentFirstName);
+                // Set the nav header name here too
+                if (nav_username_display != null) {
+                    nav_username_display.setText(currentFirstName);
+                }
             } else {
                 fetchUserData(currentUserId);
             }
@@ -138,6 +152,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
         if (currentUserId != null && (currentFirstName == null || currentFirstName.isEmpty() || welcomeTextView.getText().toString().startsWith("Welcome") || welcomeTextView.getText().toString().contains("Error"))) {
             Log.d("HomeActivity", "onResume() - Calling fetchUserData()");
+            // This line was previously placed here, it's safer to set the text after data is fetched
+            // if (nav_username_display != null && currentFirstName != null) {
+            //     nav_username_display.setText(currentFirstName);
+            // }
             fetchUserData(currentUserId);
         }
         Log.d("HomeActivity", "onResume() - Finished");
@@ -154,6 +172,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         if (!name.isEmpty()) {
             currentFirstName = name;
             welcomeTextView.setText("Hello, " + currentFirstName);
+            // Set the nav header name here
+            if (nav_username_display != null) {
+                nav_username_display.setText(currentFirstName);
+            }
             FirebaseUser user = mAuth.getCurrentUser();
             if (user != null) {
                 updateUserNameInFirestore(user.getUid(), name);
@@ -202,7 +224,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                             currentFirstName = name;
                             welcomeTextView.setText("Hello, " + name);
                             Log.d("HomeActivity", "fetchUserData() - Success, name: " + name);
-                            // ... other data handling ...
+                            // Set the nav header name here
+                            if (nav_username_display != null) {
+                                nav_username_display.setText(currentFirstName);
+                            }
                         } else {
                             welcomeTextView.setText("Welcome!");
                             Log.w("HomeActivity", "fetchUserData() - No user data found in Firestore for this UID.");
@@ -239,6 +264,8 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             // intent = new Intent(HomeActivity.this, AboutUsActivity.class);
         } else if (id == R.id.nav_send) { // FAQs
             // intent = new Intent(HomeActivity.this, FAQsActivity.class);
+        } else if (id == R.id.nav_logout) {
+            intent = new Intent(this, MainActivity.class);
         }
 
         if (intent != null) {
@@ -247,7 +274,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             finish();
         }
 
-        drawerLayout.closeDrawer(navigationView); // Use navigationView directly as it's initialized
+        drawerLayout.closeDrawer(navigationView);
         return true;
     }
 

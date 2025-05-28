@@ -24,9 +24,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/forum_post_title"  android:layout_width="match_parent"
+                android:id="@+id/forum_post_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="[Forum Post Title]" android:fontFamily="@font/poppins_bold"
+                android:text="[Forum Post Title]"
+                android:fontFamily="@font/poppins_bold"
                 android:textColor="@color/bp_bg"
                 android:textSize="16sp"
                 android:maxLines="2"
@@ -39,10 +41,12 @@
                 android:layout_marginTop="4dp">
 
                 <TextView
-                    android:id="@+id/forum_author"  android:layout_width="wrap_content"
+                    android:id="@+id/forum_author"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="[Author Name]" android:fontFamily="@font/poppins_light"
-                    android:textColor="@color/gray"
+                    android:text="[Author Name]"
+                    android:fontFamily="@font/poppins_light"
+                    android:textColor="@color/cardview_dark_background"
                     android:textSize="12sp"
                     android:maxLines="1"
                     android:ellipsize="end" />
@@ -64,11 +68,18 @@
                     android:layout_height="wrap_content"
                     android:text="[Date]"
                     android:fontFamily="@font/poppins_light"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/cardview_dark_background"
                     android:textSize="12sp"
                     android:maxLines="1"
                     android:ellipsize="end" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/forum_post_full_content_hidden"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" android:text="This is the full content that will be passed to the next activity but not displayed in the list item." />
+
         </LinearLayout>
 
         <LinearLayout
@@ -78,19 +89,22 @@
             android:gravity="end"
             android:layout_gravity="bottom">
             <ImageView
-                android:id="@+id/icon_comments" android:layout_width="20dp"
+                android:id="@+id/icon_comments"
+                android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_chat_bubble"
                 android:contentDescription="Comments Icon"
                 android:padding="0dp"
                 android:layout_marginEnd="0dp" />
             <TextView
-                android:id="@+id/pad_number_of_comments" android:layout_width="wrap_content"
+                android:id="@+id/pad_number_of_comments"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:fontFamily="@font/poppins_light"
-                android:text="0" android:textColor="@color/bp_bg"
+                android:text="0"
+                android:textColor="@color/bp_bg"
                 android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>

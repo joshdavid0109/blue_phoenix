@@ -17,6 +17,7 @@ firebaseAuth = "23.2.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.4" # Added version for firebase-firestore
 google-play-services-auth = "21.3.0"
+swiperefreshlayout = "1.1.0"
 
 
 [libraries]
@@ -34,7 +35,8 @@ viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpag
 gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "gridlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { name = "com.google.firebase", module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" } # Added firebase-firestore
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" } # Added firebase-firestore
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

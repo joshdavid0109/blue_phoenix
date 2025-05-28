@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/comment_background">
+
+        <TextView
+            android:id="@+id/comment_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/bp_name_light_blue"
+            android:textSize="14sp"
+            tools:text="John Doe" />
+
+            <TextView
+                android:id="@+id/comment_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_light"
+                android:textColor="@color/bp_bg"
+                android:textSize="14sp"
+                tools:text="This is a very insightful comment about the forum post. I learned a lot from it." />
+
+            <TextView
+                android:id="@+id/comment_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_light"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="10sp"
+                tools:text="May 25, 2025 at 12:00 PM" />
+
+</LinearLayout>

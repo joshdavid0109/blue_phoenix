@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddNewPostActivity"  tools:openDrawer="start">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bp_bg"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            tools:ignore="UselessParent">
+            <ImageView
+                android:id="@+id/menu_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:contentDescription="Menu Icon"
+                android:src="@drawable/ic_side_bar"
+                app:tint="@color/bp_name_light_blue" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/logOut_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/menu_icon"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                app:startIconContentDescription="Email Icon"
+                app:startIconDrawable="@drawable/ic_out"
+                app:startIconTint="@color/bp_name_light_blue" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="51dp"
+                android:layout_height="51dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/logo"
+                app:srcCompat="@drawable/bp_logo" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="40dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/women_display_picture"
+                    app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/user_display_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins_extrabold"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:text="@string/display_name"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/main_greeting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_light"
+                        android:text="@string/hope_you_are_doing_well"
+                        android:textColor="@color/bp_name_light_blue"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/home_search_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:background="@drawable/search_bar_border"
+            android:drawableStart="@drawable/ic_magnify"
+            android:drawablePadding="3dp"
+            android:ems="1"
+            android:fontFamily="@font/poppins_light"
+            android:hint="Find"
+            android:inputType="text"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:textColor="@color/bp_bg"
+            android:textColorHint="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText"
+            android:visibility="gone"/> <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_background"
+        android:padding="20dp"> <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/add_post_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textColor="@color/bp_bg"
+                android:fontFamily="@font/poppins_bold"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_arrow_back"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginBottom="15dp"
+                tools:ignore="HardcodedText" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create New Post"
+                android:fontFamily="@font/poppins_bold"
+                android:textSize="22sp"
+                android:textColor="@color/bp_bg"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/title_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:boxStrokeColor="@color/bp_bg"
+                app:hintTextColor="@color/bp_name_light_blue"
+                android:textColorHint="@color/gray"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Post Title"
+                    android:fontFamily="@font/poppins_light"
+                    android:textColor="@color/bp_bg"
+                    android:inputType="textCapSentences"
+                    android:maxLength="100"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/content_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:boxStrokeColor="@color/bp_bg"
+                app:hintTextColor="@color/bp_name_light_blue"
+                android:textColorHint="@color/gray"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Post Content"
+                    android:fontFamily="@font/poppins_light"
+                    android:textColor="@color/bp_bg"
+                    android:inputType="textMultiLine"
+                    android:minLines="5"
+                    android:gravity="top|start"
+                    android:scrollbars="vertical"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/button_submit_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit Post"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/bp_bg"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/button_cancel_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:fontFamily="@font/poppins_light"
+                android:textColor="@color/bp_bg"
+                android:backgroundTint="@android:color/transparent"
+                android:outlineProvider="none"/>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="16dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/home_web_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/web_icon"
+                            android:layout_width="22dp"
+                            android:layout_height="20dp"
+                            app:drawableStartCompat="@drawable/ic_web"
+                            app:tint="@color/bp_name_light_blue" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:text="@string/www_bluephoenix_com"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/home_fb_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/fb_icon"
+                            android:layout_width="22dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="2dp"
+                            app:drawableStartCompat="@drawable/ic_fb"
+                            app:tint="@color/bp_name_light_blue" />
+
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:text="@string/blue_phoenix_illustrated_reviewers"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="13sp"
+                            tools:ignore="SmallSp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </ScrollView>
+    </FrameLayout>
+    </LinearLayout>
+
+    <!--    <com.google.android.material.navigation.NavigationView-->
+    <!--        android:id="@+id/nav_view"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_gravity="start"-->
+    <!--        android:fitsSystemWindows="true"-->
+    <!--        android:background="@color/white"-->
+    <!--        app:headerLayout="@layout/nav_header_main"-->
+    <!--        app:menu="@menu/activity_main_drawer"-->
+    <!--        app:itemTextAppearance="@style/NavigationViewTextStyle"-->
+    <!--        app:subheaderTextAppearance="@style/NavigationViewTextTitleStyle"-->
+    <!--        app:itemTextColor="@color/black"/>-->
+
+</androidx.drawerlayout.widget.DrawerLayout>

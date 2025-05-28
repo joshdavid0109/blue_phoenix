@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_extrabold"
-            android:text="@string/welcome_back"
+            android:text="@string/registration_title"
             android:textAlignment="center"
             android:textColor="@color/bp_bg"
             android:textSize="30sp" />
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_light"
-            android:text="@string/sign_in_to_continue_using_the_app"
+            android:text="@string/registration"
             android:textAlignment="center"
             android:textColor="@color/bp_bg"
             android:textSize="16sp" />

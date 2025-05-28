@@ -45,7 +45,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
-    implementation (libs.play.services.auth) // For Google Sign-in
+    implementation (libs.play.services.auth)
+    implementation(libs.swiperefreshlayout) // For Google Sign-in
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
