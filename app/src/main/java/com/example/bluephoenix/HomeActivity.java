@@ -14,7 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.cardview.widget.CardView; // Make sure this is imported
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,7 +33,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class HomeActivity extends AppCompatActivity implements GetUserNameDialogFragment.NameInputDialogListener, NavigationView.OnNavigationItemSelectedListener {
     private TextView welcomeTextView;
     private FirebaseFirestore db;
-    private CardView cardViewRem;
+    // Declare all your CardViews for main topics here
+    private CardView cardViewCivil; // Assuming you have one for Civil Law
+    private CardView cardViewCommercial; // Assuming you have one for Commercial Law
+    private CardView cardViewRem; // This is the one you already have
+
+    private CardView cardViewConstitutional;
+
+    private CardView cardViewCriminal;
+
+    private CardView cardViewTaxation;
+
     private TextInputLayout logOutBtn;
     private FirebaseAuth mAuth;
     private boolean isNewUser = false;
@@ -46,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
     private TextView nav_username_display;
 
-    @SuppressLint({"SetTextI18n", "MissingInflatedId"})
+    @SuppressLint({"SetTextI18d", "MissingInflatedId"}) // Added @SuppressLint("MissingInflatedId") just in case, but it's good practice to ensure all IDs are found.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,24 +73,27 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         menuIcon = findViewById(R.id.menu_icon);
 
         navigationView.setNavigationItemSelectedListener(this);
-        // Correct way to find the TextView inside the navigation header
-        View headerView = navigationView.getHeaderView(0); // Get the first header view
+        View headerView = navigationView.getHeaderView(0);
         nav_username_display = headerView.findViewById(R.id.nav_header_title);
 
-
-        menuIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(navigationView)) {
-                    drawerLayout.closeDrawer(navigationView);
-                } else {
-                    drawerLayout.openDrawer(navigationView);
-                }
+        menuIcon.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(navigationView)) {
+                drawerLayout.closeDrawer(navigationView);
+            } else {
+                drawerLayout.openDrawer(navigationView);
             }
         });
 
         welcomeTextView = findViewById(R.id.user_display_name);
-        cardViewRem = findViewById(R.id.home_rem);
+
+        // Initialize all your CardViews for main topics
+        cardViewCivil = findViewById(R.id.home_civ); // Assuming R.id.home_civil is the ID for Civil Law CardView
+        cardViewCommercial = findViewById(R.id.home_comm); // Assuming R.id.home_commercial
+        cardViewRem = findViewById(R.id.home_rem); // Your existing Remedial Law CardView
+        cardViewCriminal = findViewById(R.id.home_crim);
+        cardViewConstitutional = findViewById(R.id.home_consti);
+        cardViewTaxation = findViewById(R.id.home_tax);
+
         logOutBtn = findViewById(R.id.logOut_ic);
 
         db = FirebaseFirestore.getInstance();
@@ -97,7 +110,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             Log.d("HomeActivity", "onCreate() - Restored currentFirstName: " + currentFirstName + ", currentUserId: " + currentUserId);
             if (currentFirstName != null && !currentFirstName.startsWith("Hello")) {
                 welcomeTextView.setText("Hello, " + currentFirstName);
-                // Set the nav header name here too
                 if (nav_username_display != null) {
                     nav_username_display.setText(currentFirstName);
                 }
@@ -116,7 +128,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             } else if (firstNameFromIntent != null && !firstNameFromIntent.isEmpty()) {
                 currentFirstName = firstNameFromIntent;
                 welcomeTextView.setText("Hello, " + currentFirstName);
-                // Set the nav header name here too
                 if (nav_username_display != null) {
                     nav_username_display.setText(currentFirstName);
                 }
@@ -127,11 +138,54 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             welcomeTextView.setText("Error: Could not retrieve user information.");
         }
 
-        cardViewRem.setOnClickListener(v -> {
+        // Set OnClickListener for Civil Law CardView
+        cardViewCivil.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
-            Log.d("HomeActivity", "Starting ReviewerActivity");
+            // Pass the specific main topic name "Civil Law" as an extra
+            intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Civil Law");
+            Log.d("HomeActivity", "Starting ReviewerActivity for: Civil Law");
             startActivity(intent);
         });
+
+        // Set OnClickListener for Commercial Law CardView
+        cardViewCommercial.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            // Pass the specific main topic name "Commercial Law" as an extra
+            intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Commercial Law");
+            Log.d("HomeActivity", "Starting ReviewerActivity for: Commercial Law");
+            startActivity(intent);
+        });
+
+        // Your existing Remedial Law CardView click listener, now with extra
+        cardViewRem.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            // Pass the specific main topic name "Remedial Law" as an extra
+            intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Remedial Law");
+            Log.d("HomeActivity", "Starting ReviewerActivity for: Remedial Law");
+            startActivity(intent);
+        });
+
+         cardViewCriminal.setOnClickListener(v -> {
+             Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Criminal Law");
+             Log.d("HomeActivity", "Starting ReviewerActivity for: Criminal Law");
+             startActivity(intent);
+         });
+
+         cardViewConstitutional.setOnClickListener(v -> {
+             Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Constitutional Law");
+             Log.d("HomeActivity", "Starting ReviewerActivity for: Constitutional Law");
+             startActivity(intent);
+         });
+
+         cardViewTaxation.setOnClickListener(v -> {
+             Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Taxation Law");
+             Log.d("HomeActivity", "Starting ReviewerActivity for: Taxation Law");
+             startActivity(intent);
+         });
+
         logOutBtn.setOnClickListener(v -> showLogoutConfirmationDialog());
         Log.d("HomeActivity", "onCreate() - Finished");
     }
@@ -152,10 +206,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
         if (currentUserId != null && (currentFirstName == null || currentFirstName.isEmpty() || welcomeTextView.getText().toString().startsWith("Welcome") || welcomeTextView.getText().toString().contains("Error"))) {
             Log.d("HomeActivity", "onResume() - Calling fetchUserData()");
-            // This line was previously placed here, it's safer to set the text after data is fetched
-            // if (nav_username_display != null && currentFirstName != null) {
-            //     nav_username_display.setText(currentFirstName);
-            // }
             fetchUserData(currentUserId);
         }
         Log.d("HomeActivity", "onResume() - Finished");
@@ -172,7 +222,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         if (!name.isEmpty()) {
             currentFirstName = name;
             welcomeTextView.setText("Hello, " + currentFirstName);
-            // Set the nav header name here
             if (nav_username_display != null) {
                 nav_username_display.setText(currentFirstName);
             }
@@ -224,7 +273,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                             currentFirstName = name;
                             welcomeTextView.setText("Hello, " + name);
                             Log.d("HomeActivity", "fetchUserData() - Success, name: " + name);
-                            // Set the nav header name here
                             if (nav_username_display != null) {
                                 nav_username_display.setText(currentFirstName);
                             }
@@ -242,14 +290,13 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        Intent intent = null; // Declare intent here
+        Intent intent = null;
 
         if (id == R.id.nav_home) {
-            // Already in HomeActivity, no navigation needed
             Toast.makeText(this, "You are already on Home screen.", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_gallery) { // Calendar
+        } else if (id == R.id.nav_gallery) {
             // intent = new Intent(HomeActivity.this, CalendarActivity.class);
-        } else if (id == R.id.nav_slideshow) { // Peer Review and Discussion (Forum)
+        } else if (id == R.id.nav_slideshow) {
             intent = new Intent(HomeActivity.this, ForumActivity.class);
             if (currentUserId != null) {
                 intent.putExtra("USER_ID", currentUserId);
@@ -259,10 +306,9 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 intent.putExtra("USER_NAME", currentFirstName);
                 Log.d("HomeActivity", "Passing USER_NAME to ForumActivity: " + currentFirstName);
             }
-            // ------------------------------------
-        } else if (id == R.id.nav_share) { // About Us
+        } else if (id == R.id.nav_share) {
             // intent = new Intent(HomeActivity.this, AboutUsActivity.class);
-        } else if (id == R.id.nav_send) { // FAQs
+        } else if (id == R.id.nav_send) {
             // intent = new Intent(HomeActivity.this, FAQsActivity.class);
         } else if (id == R.id.nav_logout) {
             intent = new Intent(this, MainActivity.class);
@@ -280,7 +326,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(navigationView)) { // Use navigationView directly
+        if (drawerLayout.isDrawerOpen(navigationView)) {
             drawerLayout.closeDrawer(navigationView);
         } else {
             super.onBackPressed();

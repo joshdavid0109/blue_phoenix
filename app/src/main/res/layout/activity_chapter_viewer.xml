@@ -12,8 +12,8 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ReviewerActivity"
-        android:background="@color/bp_bg">
+        android:background="@color/bp_bg"
+        tools:context=".ChapterViewerActivity">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -76,7 +76,6 @@
                     android:gravity="center">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputLayoutEmail"
                         android:layout_width="45dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -84,7 +83,7 @@
                         android:textColorHint="@color/bp_bg"
                         app:boxStrokeColor="@color/bp_bg"
                         app:hintTextColor="@color/bp_bg"
-                        app:startIconContentDescription="Email Icon"
+                        app:startIconContentDescription="Book Icon"
                         app:startIconDrawable="@drawable/ic_book"
                         app:startIconTint="@color/bp_bg" />
 
@@ -95,13 +94,13 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/user_display_name"
+                            android:id="@+id/main_topic_title_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="@font/poppins_extrabold"
                             android:maxLines="1"
-                            android:text="@string/reviewer_main_title"
+                            android:text="Main Topic Name"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
                     </LinearLayout>
@@ -109,7 +108,7 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/button_continue_session_placeholder"
                 android:layout_width="250dp"
                 android:layout_height="40dp"
                 android:background="@drawable/button_round_corners"
@@ -118,7 +117,6 @@
                 android:textSize="11sp"
                 android:text="@string/continue_previous_session"
                 android:layout_gravity="center_horizontal"/>
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -132,11 +130,12 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/i_codals"
+                        android:id="@+id/i_chapter_header"
                         android:layout_width="match_parent"
-                        android:layout_height="54dp"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/arrow_back_ic"
@@ -148,32 +147,33 @@
                             android:textColorHint="@color/bp_bg"
                             app:boxStrokeColor="@color/bp_bg"
                             app:hintTextColor="@color/bp_bg"
-                            app:startIconContentDescription="Email Icon"
+                            app:startIconContentDescription="Back Arrow Icon"
                             app:startIconDrawable="@drawable/ic_arrow_back"
                             app:startIconTint="@color/bp_bg">
-
                         </com.google.android.material.textfield.TextInputLayout>
+
                         <TextView
-                            android:id="@+id/codal_title_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="52dp"
-                            android:layout_marginTop="2dp"
+                            android:id="@+id/chapter_title_text_view"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:layout_marginStart="10dp"
                             android:fontFamily="@font/poppins_bold"
-                            android:gravity="center"
-                            android:text="@string/reviewer_title_remedial_law"
+                            android:gravity="start"
+                            android:text="Subtopic Name (e.g., Land Titles and Deeds)"
                             android:textColor="@color/bp_bg"
-                            android:textSize="18sp" />
+                            android:textSize="18sp"
+                            android:paddingEnd="16dp" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/subtopic_buttons_recyclerview"
+                        android:id="@+id/content_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:padding="15dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_subtopic_button" />
+                        tools:listitem="@layout/item_content_text" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -244,18 +244,5 @@
             </FrameLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    <com.google.android.material.navigation.NavigationView-->
-<!--        android:id="@+id/nav_view"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="start"-->
-<!--        android:fitsSystemWindows="true"-->
-<!--        android:background="@color/white"-->
-<!--        app:headerLayout="@layout/nav_header_main"-->
-<!--        app:menu="@menu/activity_main_drawer"-->
-<!--        app:itemTextAppearance="@style/NavigationViewTextStyle"-->
-<!--        app:subheaderTextAppearance="@style/NavigationViewTextTitleStyle"-->
-<!--        app:itemTextColor="@color/black"/>-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

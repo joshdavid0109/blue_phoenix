@@ -34,7 +34,13 @@ android {
 }
 
 dependencies {
+    // ... other dependencies you might have
 
+    // Glide
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+
+    // Your existing libs.toml dependencies (assuming you have a libs.versions.toml file)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -42,11 +48,17 @@ dependencies {
     implementation(libs.viewpager2)
     implementation(libs.dotsindicator)
     implementation(libs.gridlayout)
+
+    // Firebase
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
-    implementation (libs.play.services.auth)
-    implementation(libs.swiperefreshlayout) // For Google Sign-in
+    implementation(libs.play.services.auth) // For Google Sign-in
+
+    // Other libraries
+    implementation(libs.swiperefreshlayout)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

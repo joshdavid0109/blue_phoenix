@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"> <Button
-    android:id="@+id/subtopic_button"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fontFamily="@font/poppins_semibold"
-    android:textColor="@color/white"
-    android:text="Subtopic Name" /> </LinearLayout>
+    android:paddingBottom="2dp">
+        <Button
+            android:id="@+id/subtopic_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/white"
+            android:text="Subtopic Name" />
+</LinearLayout>
