@@ -127,6 +127,7 @@
             android:layout_marginTop="15dp">
 
             <ScrollView
+                android:id="@+id/main_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fillViewport="true">
@@ -216,7 +217,31 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         tools:ignore="HardcodedText" />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/searchResultsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:background="#40FFFFFF" tools:listitem="@layout/item_search_result"/>
+
+                    <TextView
+                        android:id="@+id/no_results_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="32dp"
+                        android:fontFamily="@font/poppins_light"
+                        android:gravity="center"
+                        android:text="No results found"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        tools:ignore="HardcodedText" />
+
+
                     <androidx.gridlayout.widget.GridLayout
+                        android:id="@+id/home_category_grid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"

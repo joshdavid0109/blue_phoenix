@@ -11,4 +11,7 @@
     <color name="bp_name_light_blue">#35AAD7</color>
     <color name="gray">#4c28282f</color>
     <color name="thin_border_color">#CCCCCC</color>
+    <color name="green">#22FF2A</color>
+    <color name="blue">#1052FF</color>
+    <color name="orange">#FF5722</color>
 </resources>
