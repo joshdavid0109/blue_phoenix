@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/text_content_view"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:textSize="16sp"
-    android:textColor="@color/black"
-    android:text="This is a paragraph of text content." />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/content_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/bp_bg"
+        android:fontFamily="@font/poppins_light"
+        android:lineSpacingExtra="4dp"
+        tools:text="This is an example of the content text for a chapter item." />
+
+</LinearLayout>

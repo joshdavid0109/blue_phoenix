@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chapter_title_text_view_item"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="8dp"
-    android:textStyle="bold"
-    android:textSize="20sp"
-    android:textColor="@color/black"
-    android:text="CHAPTER TITLE EXAMPLE" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/chapter_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/bp_bg"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        tools:text="CHAPTER I. GENERAL PROVISIONS" />
+
+</LinearLayout>

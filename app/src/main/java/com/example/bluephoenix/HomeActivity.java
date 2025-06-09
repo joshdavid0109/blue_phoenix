@@ -177,6 +177,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         db = FirebaseFirestore.getInstance(); // Initialize db first
 
         gridLayout = findViewById(R.id.home_category_grid);
+        no_results_text = findViewById(R.id.no_results_text);
 
         // --- IMPORTANT: Check authentication early ---
         currentUser = mAuth.getCurrentUser();
@@ -280,17 +281,33 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                     searchHandler.removeCallbacks(searchRunnable);
                 }
 
-                // For very short queries, just show main content immediately
-                if (s.toString().trim().length() <= 1) {
+                String currentInput = s.toString().trim();
+
+                if (currentInput.isEmpty()) {
+                    // If the field is now empty (e.g., due to backspacing all text)
+                    Log.d("HomeActivity", "Search field is now empty. Triggering UI update.");
+                    // Clear any previous search results from the adapter and list
                     searchResults.clear();
-                    searchResultsRecyclerView.setVisibility(View.GONE);
-                    contentLayout.setVisibility(View.VISIBLE);
+                    searchAdapter.notifyDataSetChanged(); // Notifying here ensures RecyclerView is empty
+                    updateSearchResultsUI(); // <-- This is the crucial call
+                    return; // Stop here, no need to perform search or debounce
+                }
+
+                // For very short queries, clear results and hide search views.
+                // Do NOT call updateSearchResultsUI here, as it would show the main content.
+                // The main content should remain hidden until the query is truly empty.
+                if (currentInput.length() <= 1) {
+                    searchResults.clear();
                     searchAdapter.notifyDataSetChanged();
+                    searchResultsRecyclerView.setVisibility(View.GONE);
+                    no_results_text.setVisibility(View.GONE);
+                    // The mainContentScrollView and gridLayout would have been hidden by
+                    // the previous call to updateSearchResultsUI when the query was not empty.
                     return;
                 }
 
                 // Create new search runnable with delay (debouncing)
-                searchRunnable = () -> searchFirestore(s.toString());
+                searchRunnable = () -> searchFirestore(currentInput);
                 searchHandler.postDelayed(searchRunnable, SEARCH_DELAY_MS);
             }
 
@@ -326,7 +343,23 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 contentLayout.setVisibility(View.VISIBLE);
             }
         });
+        home_search_field.setOnFocusChangeListener((v, hasFocus) -> {
+            String currentQuery = home_search_field.getText().toString().trim();
+            if (hasFocus) {
+                // If gaining focus with an existing query, initiate a search (if long enough)
+                if (!currentQuery.isEmpty() && currentQuery.length() > 1) {
+                    searchFirestore(currentQuery);
+                }
+            } else {
+                // If losing focus AND the search field is empty, revert to main content
+                if (currentQuery.isEmpty()) {
+                    updateSearchResultsUI(); // Crucial: Reverts to main content if field empty on focus loss
+                }
+                // If focus is lost but there's still a query, the search results/no results state should persist.
+            }
+        });
     }
+
 
     // Optional: Add this method to improve search experience
     private void showSearchState(boolean isSearching) {
@@ -574,56 +607,58 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
             String currentQuery = home_search_field.getText().toString().trim();
 
-            no_results_text = findViewById(R.id.no_results_text);
+            // Ensure no_results_text is correctly initialized (from onCreate, not here)
+            // no_results_text = findViewById(R.id.no_results_text); // REMOVE THIS LINE IF ALREADY IN ONCREATE
 
-            // Always hide no_results_text initially
+            // Always start by hiding all search-related UI components
+            searchResultsRecyclerView.setVisibility(View.GONE);
             no_results_text.setVisibility(View.GONE);
 
+            if (currentQuery.isEmpty()) {
+                // SCENARIO 1: Search field is EMPTY
+                Log.d("HomeActivity", "Search query is empty. Showing main content (ScrollView) and GridLayout.");
 
-            if (!searchResults.isEmpty()) {
-                // Found results: Show RecyclerView, hide main content
-                searchResultsRecyclerView.setVisibility(View.VISIBLE);
-                gridLayout.setVisibility(View.GONE);
-                Log.d("HomeActivity", "Showing search results RecyclerView. Hiding contentLayout.");
 
-                // Sort results
-                searchResults.sort((item1, item2) -> {
-                    boolean item1IsContentMatch = item1.getTitle().contains("match)");
-                    boolean item2IsContentMatch = item2.getTitle().contains("match)");
+                // Explicitly show the GridLayout
+                gridLayout.setVisibility(View.VISIBLE);
 
-                    if (item1IsContentMatch && !item2IsContentMatch) return 1;
-                    if (!item1IsContentMatch && item2IsContentMatch) return -1;
-                    return item1.getTitle().compareToIgnoreCase(item2.getTitle());
-                });
-
-                searchAdapter.setSearchQuery(currentQuery); // Make sure adapter knows the query for highlighting
+                // Clear any previous search results from the adapter and list (important when clearing text)
+                searchResults.clear();
                 searchAdapter.notifyDataSetChanged();
-                Log.d("HomeActivity", "Search results adapter notified.");
 
             } else {
-                // No search results found for the current query
-                if (currentQuery.isEmpty()) {
-                    // If search field is empty, show main content
-                    searchResultsRecyclerView.setVisibility(View.GONE);
-                    contentLayout.setVisibility(View.VISIBLE);
-                    gridLayout.setVisibility(View.VISIBLE);
-                    Log.d("HomeActivity", "Search query empty. Showing contentLayout.");
-                } else {
-                    // If there's a query but no results:
-                    // Hide RecyclerView, show "No results" text, keep contentLayout hidden if search is active
-                    searchResultsRecyclerView.setVisibility(View.GONE);
-                    no_results_text.setVisibility(View.VISIBLE); // Show "No results found" message
-                    gridLayout.setVisibility(View.VISIBLE);
-                    contentLayout.setVisibility(View.GONE); // Keep main content hidden while showing no results message
-                    Log.d("HomeActivity", "No results found for query '" + currentQuery + "'. Showing no_results_text.");
+                // SCENARIO 2: Search field has a QUERY (not empty)
+                Log.d("HomeActivity", "Search query active: '" + currentQuery + "'. Hiding main content and GridLayout.");
 
-                    // Optional: You might want to show main content again if the user isn't actively searching
-                    // e.g., if focus is lost and query is empty, or if you have a "clear search" button.
-                    // For now, let's keep content hidden if a query (even with no results) is active.
+
+                // Explicitly hide the GridLayout
+                gridLayout.setVisibility(View.GONE);
+
+                if (!searchResults.isEmpty()) {
+                    // SUB-SCENARIO 2a: Results found for the query
+                    Log.d("HomeActivity", "Showing search results RecyclerView.");
+                    searchResultsRecyclerView.setVisibility(View.VISIBLE);
+
+                    // Sort results
+                    searchResults.sort((item1, item2) -> {
+                        boolean item1IsContentMatch = item1.getTitle().contains("match)");
+                        boolean item2IsContentMatch = item2.getTitle().contains("match)");
+
+                        if (item1IsContentMatch && !item2IsContentMatch) return 1;
+                        if (!item1IsContentMatch && item2IsContentMatch) return -1;
+                        return item1.getTitle().compareToIgnoreCase(item2.getTitle());
+                    });
+
+                    searchAdapter.setSearchQuery(currentQuery);
+                    searchAdapter.notifyDataSetChanged();
+                    Log.d("HomeActivity", "Search results adapter notified.");
+
+                } else {
+                    // SUB-SCENARIO 2b: No results found for the current query
+                    Log.d("HomeActivity", "No results found for query '" + currentQuery + "'. Showing no_results_text.");
+                    no_results_text.setVisibility(View.VISIBLE); // Show "No results found" message
                 }
             }
-            gridLayout.setVisibility(View.VISIBLE);
-
         });
     }
 

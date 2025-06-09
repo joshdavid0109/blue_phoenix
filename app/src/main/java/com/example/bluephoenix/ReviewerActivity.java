@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bluephoenix.adapters.ChapterViewerActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -91,11 +90,10 @@ public class ReviewerActivity extends AppCompatActivity {
 
                         if (task.getResult() != null && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String subtopicTitle = document.getId();
+                                String subtopicTitle = document.getId(); // e.g., "Civil Procedure"
 
-                                // **** CRITICAL CHANGE HERE ****
                                 // Construct the *full* document path to the subtopic document itself.
-                                // This path will be "codals/Civil Law/subtopics/Land Titles and Deeds"
+                                // This path will be "codals/Remedial Law/subtopics/Civil Procedure"
                                 String fullSubtopicDocumentPath = "codals/" + mainTopic + "/subtopics/" + subtopicTitle;
 
                                 // Add the Subtopic object to the list, passing the full document path
@@ -125,16 +123,16 @@ public class ReviewerActivity extends AppCompatActivity {
     public static class Subtopic {
         private String title;
         // This subcollectionPath is now the *full document path* to the subtopic,
-        // e.g., "codals/Civil Law/subtopics/Land Titles and Deeds"
-        private String subcollectionPath;
+        // e.g., "codals/Remedial Law/subtopics/Civil Procedure"
+        private String subtopicDocumentPath; // Renamed for clarity to reflect it's a document path
 
-        public Subtopic(String title, String subcollectionPath) {
+        public Subtopic(String title, String subtopicDocumentPath) {
             this.title = title;
-            this.subcollectionPath = subcollectionPath;
+            this.subtopicDocumentPath = subtopicDocumentPath;
         }
 
         public String getTitle() { return title; }
-        public String getSubcollectionPath() { return subcollectionPath; }
+        public String getSubtopicDocumentPath() { return subtopicDocumentPath; } // Renamed getter
     }
 
 
@@ -142,7 +140,7 @@ public class ReviewerActivity extends AppCompatActivity {
     public static class SubtopicAdapter extends RecyclerView.Adapter<SubtopicAdapter.SubtopicViewHolder> {
 
         private List<Subtopic> subtopicList;
-        private String adapterSelectedMainTopic;
+        private String adapterSelectedMainTopic; // This is the "Remedial Law" part
 
         public SubtopicAdapter(List<Subtopic> subtopicList, String selectedMainTopic) {
             this.subtopicList = subtopicList;
@@ -159,17 +157,27 @@ public class ReviewerActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull SubtopicViewHolder holder, int position) {
             Subtopic subtopic = subtopicList.get(position);
-            holder.subtopicButton.setText(subtopic.getTitle());
+            holder.subtopicButton.setText(subtopic.getTitle()); // e.g., "Civil Procedure"
 
             holder.subtopicButton.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), ChapterViewerActivity.class);
-                intent.putExtra("MAIN_TOPIC_NAME", adapterSelectedMainTopic);
-                intent.putExtra("SUBTOPIC_NAME", subtopic.getTitle());
-
                 // **** CRITICAL CHANGE HERE ****
-                // Pass the already correctly constructed full document path.
-                // It's already "codals/Civil Law/subtopics/Land Titles and Deeds"
-                intent.putExtra("SUBCOLLECTION_PATH", subtopic.getSubcollectionPath());
+                // Launch ReviewerContentActivity, NOT ChapterViewerActivity
+                Intent intent = new Intent(v.getContext(), ReviewerContentActivity.class);
+
+                // Pass the necessary information for ReviewerContentActivity
+                // MAIN_TOPIC is the "Remedial Law"
+                intent.putExtra("MAIN_TOPIC", adapterSelectedMainTopic);
+
+                // SUB_TOPIC is the document ID of the subtopic (e.g., "Civil Procedure")
+                intent.putExtra("SUB_TOPIC", subtopic.getTitle());
+
+                // No need to pass the subtopic document path to ReviewerContentActivity
+                // as ReviewerContentActivity will construct the 'chapters' collection path itself
+                // (e.g., "codals/Remedial Law/subtopics/Civil Procedure/chapters")
+
+                Log.d("SubtopicAdapter", "Launching ReviewerContentActivity with:");
+                Log.d("SubtopicAdapter", "  MAIN_TOPIC: " + adapterSelectedMainTopic);
+                Log.d("SubtopicAdapter", "  SUB_TOPIC: " + subtopic.getTitle());
 
                 v.getContext().startActivity(intent);
             });

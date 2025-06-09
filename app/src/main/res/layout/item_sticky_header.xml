@@ -1,0 +1,13 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sticky_header_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="16dp"
+    android:textColor="@color/black"
+    android:textSize="20sp"
+    android:fontFamily="@font/poppins_semibold"
+    android:gravity="center_vertical"
+    android:elevation="4dp"
+    tools:text="CHAPTER I. GENERAL PROVISIONS" />
