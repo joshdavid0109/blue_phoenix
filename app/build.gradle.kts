@@ -63,6 +63,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // recyclerfastscroll library - CORRECTED SYNTAX
     implementation(libs.l4digital.fastscroll)
 }

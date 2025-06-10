@@ -5,6 +5,7 @@ dotsindicator = "4.3"
 facebookAndroidSdk = "latest-release"
 fastscroll = "0.2.5"
 fastscrollVersion = "2.1.0"
+l4digitalFastscroll = "2.1.0"
 glide = "4.12.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -29,13 +30,13 @@ swiperefreshlayout = "1.1.0"
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
 facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }
 fastscroll = { module = "com.futuremind.recyclerfastscroll:fastscroll", version.ref = "fastscroll" }
+l4digital-fastscroll = { group = "io.github.l4digital", name = "fastscroll", version.ref = "l4digitalFastscroll" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-l4digital-fastscroll = { module = "io.github.l4digital:fastscroll", version.ref = "fastscrollVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

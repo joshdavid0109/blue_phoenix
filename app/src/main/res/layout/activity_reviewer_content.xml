@@ -110,7 +110,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/i_codals"
@@ -118,6 +119,7 @@
                     android:layout_height="54dp"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp">
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/arrow_back_ic"
                         android:layout_width="45dp"
@@ -134,8 +136,9 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
 
                         <TextView
                             android:id="@+id/codal_title_1"
@@ -156,42 +159,86 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginEnd="184dp"
+                            android:layout_marginEnd="20dp"
                             android:layout_marginBottom="0dp"
                             android:fontFamily="@font/poppins_light"
                             android:text="@string/reviewer_title_remedial_law"
                             android:textColor="@color/bp_bg"
                             android:textSize="12sp" />
-
                     </RelativeLayout>
+
+                    <!-- Table of Contents Button -->
+                    <ImageButton
+                        android:id="@+id/toc_button"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_toc"
+                        android:contentDescription="Table of Contents"
+                        app:tint="@color/bp_bg" />
                 </LinearLayout>
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
-                    <com.l4digital.fastscroll.FastScrollRecyclerView
-                    android:id="@+id/content_recycler_view_reviewer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="15dp"
-                    android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    tools:listitem="@layout/item_content_text"/>
-<!--                    app:fastScrollThumbColor="@color/bp_name_light_blue"-->
-<!--                    app:fastScrollTrackColor="@android:color/transparent"-->
-<!--                    app:fastScrollPopupBgColor="@color/bp_name_light_blue"-->
-<!--                    app:fastScrollPopupTextColor="@color/white"-->
-<!--                    app:fastScrollPopupTextSize="14sp"-->
-<!--                    app:hideScrollbar="false"-->
-<!--                    app:showBubble="true"-->
-<!--                    app:showBubbleAlways="false"-->
-<!--                    app:showTrack="false"-->
-<!--                    app:bubbleSize="normal"-->
-<!--                    app:fastScrollThumbWidth="8dp" -->
 
+                    <com.l4digital.fastscroll.FastScrollRecyclerView
+                        android:id="@+id/content_recycler_view_reviewer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="15dp"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_content_text"
+                        app:handleColor="@color/bp_name_light_blue"
+                        app:trackColor="@android:color/transparent"
+                        app:bubbleColor="@android:color/transparent"
+                        app:bubbleTextColor="@android:color/transparent"
+                        app:bubbleTextSize="0sp"
+                        app:hideScrollbar="false"
+                        app:showBubble="false"
+                        app:showBubbleAlways="false"
+                        app:showTrack="false"
+                        app:bubbleSize="normal"
+                        />
+                    <ScrollView
+                        android:id="@+id/toc_popup"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:background="@drawable/toc_popup_background"
+                        android:elevation="8dp"
+                        android:visibility="gone"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:padding="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/toc_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/translucent_toc_background"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/bp_bg"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center"
+                            android:paddingBottom="10dp" />
+
+                    </LinearLayout>
+                </ScrollView>
                 </FrameLayout>
             </LinearLayout>
         </FrameLayout>

@@ -1,10 +1,15 @@
 // app/src/main/java/com/example/bluephoenix/ReviewerContentActivity.java
 package com.example.bluephoenix;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater; // Import LayoutInflater - still needed if you use it elsewhere, but not for sticky header now
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,11 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView; // Keep RecyclerView import for LinearLayoutManager
 
 import com.example.bluephoenix.adapters.ChapterContentAdapter;
-// import com.example.bluephoenix.adapters.StickyHeaderItemDecoration; // REMOVED IMPORT
 import com.example.bluephoenix.models.ChapterContentItem;
+import com.l4digital.fastscroll.FastScrollRecyclerView; // L4Digital FastScrollRecyclerView import
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,16 +37,24 @@ import java.util.Map;
 public class ReviewerContentActivity extends AppCompatActivity {
 
     private TextInputLayout backBtn;
-    private RecyclerView contentRecyclerView;
+    private FastScrollRecyclerView contentRecyclerView; // Changed to FastScrollRecyclerView
     private ChapterContentAdapter chapterContentAdapter;
     private List<ChapterContentItem> contentItems;
     private TextView codalTitle1;
     private TextView codalTitle2;
+    private ImageButton tocButton;
+    private ScrollView tocPopup;
+    private LinearLayout tocContent;
+    private FastScrollTOCHandler tocHandler;
 
     private FirebaseFirestore db;
 
     private String currentMainTopic;
     private String currentSubTopic;
+
+    // These lists will be passed to the FastScrollTOCHandler
+    private List<String> chapterTitles;
+    private List<Integer> chapterPositions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +68,8 @@ public class ReviewerContentActivity extends AppCompatActivity {
         });
 
         db = FirebaseFirestore.getInstance();
+        chapterTitles = new ArrayList<>();
+        chapterPositions = new ArrayList<>(); // Initialize here
 
         Intent incomingIntent = getIntent();
         if (incomingIntent != null) {
@@ -65,26 +80,10 @@ public class ReviewerContentActivity extends AppCompatActivity {
         Log.d("ReviewerContentActivity", "Received MAIN_TOPIC: " + currentMainTopic);
         Log.d("ReviewerContentActivity", "Received SUB_TOPIC: " + currentSubTopic);
 
-        backBtn = findViewById(R.id.arrow_back_ic);
-        backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ReviewerContentActivity.this, ReviewerActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        });
-
-        contentRecyclerView = findViewById(R.id.content_recycler_view_reviewer);
-        codalTitle1 = findViewById(R.id.codal_title_1);
-        codalTitle2 = findViewById(R.id.codal_title_2);
-
-        contentItems = new ArrayList<>();
-        chapterContentAdapter = new ChapterContentAdapter(contentItems);
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        contentRecyclerView.setAdapter(chapterContentAdapter);
-
-        // OLD: NEW: Add the StickyHeaderItemDecoration
-        // OLD: // You need to pass the adapter and a LayoutInflater to the decoration
-        // OLD: contentRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(chapterContentAdapter, getLayoutInflater()));
-        // The above lines are now commented out or removed to disable the sticky header.
+        initializeViews();
+        setupRecyclerView();
+        // Removed direct call to setupFastScrollTocHandler() here
+        setupTableOfContentsButton(); // Renamed and simplified
 
         // Set header titles
         if (currentSubTopic != null) {
@@ -108,6 +107,53 @@ public class ReviewerContentActivity extends AppCompatActivity {
         fetchAllChaptersContentFromFirestore();
     }
 
+    private void initializeViews() {
+        backBtn = findViewById(R.id.arrow_back_ic);
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ReviewerContentActivity.this, ReviewerActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        });
+
+        contentRecyclerView = findViewById(R.id.content_recycler_view_reviewer);
+        codalTitle1 = findViewById(R.id.codal_title_1);
+        codalTitle2 = findViewById(R.id.codal_title_2);
+        tocButton = findViewById(R.id.toc_button);
+        tocPopup = findViewById(R.id.toc_popup);
+        tocContent = findViewById(R.id.toc_content);
+    }
+
+    private void setupRecyclerView() {
+        contentItems = new ArrayList<>();
+        chapterContentAdapter = new ChapterContentAdapter(contentItems);
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        contentRecyclerView.setAdapter(chapterContentAdapter);
+    }
+
+    // This method is now private and called only when the data is ready
+    private void setupFastScrollTocHandler() {
+        tocHandler = new FastScrollTOCHandler(
+                this,
+                contentRecyclerView,
+                tocPopup,
+                tocContent,
+                chapterTitles, // These lists should now be populated
+                chapterPositions // These lists should now be populated
+        );
+    }
+
+    private void setupTableOfContentsButton() {
+        tocButton.setOnClickListener(v -> {
+            if (tocHandler != null) { // Ensure handler is initialized
+                if (tocPopup.getVisibility() == View.VISIBLE) {
+                    tocHandler.forceHideToc();
+                } else {
+                    tocHandler.forceShowToc();
+                }
+            }
+        });
+    }
+
     private void fetchAllChaptersContentFromFirestore() {
         if (currentMainTopic == null || currentSubTopic == null) {
             Log.e("ReviewerContentActivity", "Cannot fetch chapters: Main Topic or Subtopic is null.");
@@ -124,45 +170,63 @@ public class ReviewerContentActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<ChapterContentItem> newContentItems = new ArrayList<>();
+                    chapterTitles.clear();
+                    chapterPositions.clear();
+
                     if (queryDocumentSnapshots.isEmpty()) {
-                        Log.d("ReviewerContentActivity", "No chapters found at: " + chaptersCollectionPath);
-                        Toast.makeText(this, "No chapters available for " + currentSubTopic, Toast.LENGTH_SHORT).show();
-                        newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "No chapters found for this subtopic."));
+                        // ... (handle empty) ...
                     } else {
+                        Log.d("TOC_DEBUG_ACTIVITY", "--- Populating Chapter Data for TOC ---");
+                        int currentAdapterPosition = 0; // Track adapter position manually
+
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             String chapterDocumentId = document.getId();
-                            Log.d("ReviewerContentActivity", "Processing chapter: " + chapterDocumentId);
+
+                            // Store chapter title and its adapter position *before* adding the chapter title item
+                            chapterTitles.add(chapterDocumentId);
+                            chapterPositions.add(currentAdapterPosition); // Use manual counter
+                            Log.d("TOC_DEBUG_ACTIVITY", "Adding chapter '" + chapterDocumentId + "' at proposed adapter position: " + currentAdapterPosition);
+
 
                             newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_CHAPTER_TITLE, chapterDocumentId));
+                            currentAdapterPosition++; // Increment for the chapter title itself
 
                             Object sectionsObject = document.get("sections");
                             if (sectionsObject instanceof List) {
                                 List<Map<String, Object>> sections = (List<Map<String, Object>>) sectionsObject;
-                                if (sections.isEmpty()) {
-                                    Log.w("ReviewerContentActivity", "Chapter " + chapterDocumentId + " has an empty 'sections' array.");
-                                    newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "No content for this chapter."));
-                                } else {
-                                    for (Map<String, Object> sectionMap : sections) {
-                                        if (sectionMap.containsKey("content") && sectionMap.get("content") instanceof String) {
-                                            String textContent = (String) sectionMap.get("content");
-                                            newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, textContent));
-                                        } else {
-                                            Log.w("ReviewerContentActivity", "Section map in " + chapterDocumentId + " has no 'content' field or it's not a String. Map: " + sectionMap);
-                                            newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "Error: Malformed content section."));
-                                        }
+                                for (Map<String, Object> sectionMap : sections) {
+                                    if (sectionMap.containsKey("content") && sectionMap.get("content") instanceof String) {
+                                        String textContent = (String) sectionMap.get("content");
+                                        newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, textContent));
+                                        currentAdapterPosition++; // Increment for each text item
+                                    } else {
+                                        Log.w("ReviewerContentActivity", "Section map in " + chapterDocumentId + " has no 'content' field or it's not a String. Map: " + sectionMap);
+                                        newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "Error: Malformed content section."));
+                                        currentAdapterPosition++; // Increment for error text item too
                                     }
                                 }
                             } else if (sectionsObject == null) {
                                 Log.w("ReviewerContentActivity", "Document " + chapterDocumentId + " has no 'sections' field.");
                                 newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "No content sections defined for " + chapterDocumentId + "."));
+                                currentAdapterPosition++;
                             } else {
                                 Log.e("ReviewerContentActivity", "Document " + chapterDocumentId + " 'sections' field is not a List. Actual type: " + sectionsObject.getClass().getSimpleName());
                                 newContentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "Error: Content for " + chapterDocumentId + " is in an unexpected format."));
+                                currentAdapterPosition++;
                             }
                         }
                         Log.d("ReviewerContentActivity", "Successfully loaded content for " + queryDocumentSnapshots.size() + " chapters.");
+                        Log.d("TOC_DEBUG_ACTIVITY", "Final chapterTitles: " + chapterTitles.toString());
+                        Log.d("TOC_DEBUG_ACTIVITY", "Final chapterPositions: " + chapterPositions.toString());
+                        Log.d("TOC_DEBUG_ACTIVITY", "Total content items in RecyclerView: " + newContentItems.size() + " (should equal currentAdapterPosition: " + currentAdapterPosition + ")");
                     }
                     chapterContentAdapter.updateData(newContentItems);
+
+                    if (tocHandler == null) {
+                        setupFastScrollTocHandler();
+                    } else {
+                        tocHandler.updateChapterData(chapterTitles, chapterPositions);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("ReviewerContentActivity", "Error fetching all chapters content from Firestore: " + chaptersCollectionPath, e);
@@ -170,6 +234,21 @@ public class ReviewerContentActivity extends AppCompatActivity {
                     contentItems.clear();
                     contentItems.add(new ChapterContentItem(ChapterContentItem.VIEW_TYPE_TEXT, "Error loading content: " + e.getMessage()));
                     chapterContentAdapter.notifyDataSetChanged();
+                    // Clear TOC data if content load fails
+                    chapterTitles.clear();
+                    chapterPositions.clear();
+                    if (tocHandler != null) {
+                        tocHandler.updateChapterData(chapterTitles, chapterPositions);
+                    }
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (tocPopup.getVisibility() == View.VISIBLE) {
+            tocHandler.forceHideToc(); // Use handler to hide
+        } else {
+            super.onBackPressed();
+        }
     }
 }
