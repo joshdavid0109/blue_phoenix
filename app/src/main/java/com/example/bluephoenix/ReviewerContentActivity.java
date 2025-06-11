@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/bluephoenix/ReviewerContentActivity.java
 package com.example.bluephoenix;
 
 import android.annotation.SuppressLint;
@@ -110,8 +109,7 @@ public class ReviewerContentActivity extends AppCompatActivity {
     private void initializeViews() {
         backBtn = findViewById(R.id.arrow_back_ic);
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ReviewerContentActivity.this, ReviewerActivity.class);
-            startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
 

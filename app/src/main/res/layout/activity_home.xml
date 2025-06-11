@@ -44,7 +44,7 @@
                 android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/home_icon"
                 android:layout_width="51dp"
                 android:layout_height="51dp"
                 android:layout_alignParentEnd="true"
@@ -537,6 +537,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:background="@color/white"
+        app:itemIconTint="@color/nav_item_color_selector"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer"
         app:itemTextAppearance="@style/NavigationViewTextStyle"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/calendar_day_layout.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_margin="1dp">
+
+    <TextView
+        android:id="@+id/calendarDayText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#ffffff"
+        android:background="@drawable/day_background_selector"
+        tools:text="22" />
+
+    <!-- Event indicator dots -->
+    <LinearLayout
+        android:id="@+id/eventIndicators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/event_dot"
+            android:backgroundTint="#4a90e2" />
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/event_dot"
+            android:backgroundTint="#50c878" />
+
+    </LinearLayout>
+
+</FrameLayout>

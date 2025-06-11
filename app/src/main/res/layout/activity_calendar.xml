@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddNewPostActivity"  tools:openDrawer="start">
+    tools:context=".CalendarActivity"  tools:openDrawer="start">
 
     <LinearLayout
         android:id="@+id/main"
@@ -159,18 +159,6 @@
                 android:layout_marginBottom="15dp"
                 tools:ignore="HardcodedText" />
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create New Post"
-                android:fontFamily="@font/poppins_bold"
-                android:textSize="22sp"
-                android:textColor="@color/bp_bg"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                tools:ignore="HardcodedText" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/title_input_layout"
                 android:layout_width="match_parent"
@@ -179,61 +167,111 @@
                 app:boxStrokeColor="@color/bp_bg"
                 app:hintTextColor="@color/bp_name_light_blue"
                 android:textColorHint="@color/gray"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_title"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Post Title"
-                    android:fontFamily="@font/poppins_light"
-                    android:textColor="@color/bp_bg"
-                    android:inputType="textCapSentences"
-                    android:maxLength="100"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/content_input_layout"
+                    <ImageButton
+                        android:id="@+id/prevMonthButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_left"
+                        android:contentDescription="Previous Month"
+                        app:tint="@color/bp_bg" />
+
+                    <TextView
+                        android:id="@+id/monthYearText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="January 2025"
+                        android:textColor="@color/bp_bg"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/nextMonthButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_right"
+                        android:contentDescription="Next Month"
+                        app:tint="@color/bp_bg" />
+
+                </LinearLayout>
+
+            <!-- Day titles container -->
+            <include
+                android:id="@+id/titlesContainer"
+                layout="@layout/calendar_day_titles_container" />
+
+            <!-- Calendar View -->
+            <com.kizitonwose.calendar.view.CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:boxStrokeColor="@color/bp_bg"
-                app:hintTextColor="@color/bp_name_light_blue"
-                android:textColorHint="@color/gray"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/bp_bg"
+                app:cv_dayViewResource="@layout/calendar_day_layout" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_content"
-                    android:layout_width="match_parent"
+            <!-- Bottom Navigation Placeholder -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:background="#2a2a2a"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Post Content"
-                    android:fontFamily="@font/poppins_light"
-                    android:textColor="@color/bp_bg"
-                    android:inputType="textMultiLine"
-                    android:minLines="5"
-                    android:gravity="top|start"
-                    android:scrollbars="vertical"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="LOG"
+                    android:textColor="#4a90e2"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="32dp" />
 
-            <Button
-                android:id="@+id/button_submit_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Submit Post"
-                android:fontFamily="@font/poppins_bold"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/bp_bg"
-                android:layout_marginBottom="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STATS"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="32dp" />
 
-            <Button
-                android:id="@+id/button_cancel_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:fontFamily="@font/poppins_light"
-                android:textColor="@color/bp_bg"
-                android:backgroundTint="@android:color/transparent"
-                android:outlineProvider="none"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ANALYSIS"
+                    android:textColor="#666666"
+                    android:textSize="14sp" />
+
+                </LinearLayout>
+
+<!--            <Button-->
+<!--                android:id="@+id/button_submit_post"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Submit Post"-->
+<!--                android:fontFamily="@font/poppins_bold"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:backgroundTint="@color/bp_bg"-->
+<!--                android:layout_marginBottom="10dp"/>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/button_cancel_post"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Cancel"-->
+<!--                android:fontFamily="@font/poppins_light"-->
+<!--                android:textColor="@color/bp_bg"-->
+<!--                android:backgroundTint="@android:color/transparent"-->
+<!--                android:outlineProvider="none"/>-->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

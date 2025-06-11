@@ -1,10 +1,12 @@
 [versions]
 agp = "8.10.1"
 compiler = "4.12.0"
+compose = "2.7.0"
 dotsindicator = "4.3"
 facebookAndroidSdk = "latest-release"
 fastscroll = "0.2.5"
 fastscrollVersion = "2.1.0"
+googleMaterial = "1.9.0"
 l4digitalFastscroll = "2.1.0"
 glide = "4.12.0"
 junit = "4.13.2"
@@ -14,8 +16,12 @@ appcompat = "1.7.1"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
+materialCalendarview = "2.0.1"
+materialCalendarviewVersion = "2.0.0"
 playServicesAuth = "21.3.0"
 recyclerviewfastscroller = "1.0.0"
+threetenabp = "1.3.1"
+view = "2.0.0"
 viewpager2 = "1.1.0"
 gridlayout = "1.1.0"
 googleGmsGoogleServices = "4.4.2"
@@ -27,6 +33,7 @@ swiperefreshlayout = "1.1.0"
 
 
 [libraries]
+compose = { module = "com.kizitonwose.calendar:compose", version.ref = "compose" }
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
 facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }
 fastscroll = { module = "com.futuremind.recyclerfastscroll:fastscroll", version.ref = "fastscroll" }
@@ -40,8 +47,13 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+material-calendarview = { module = "com.prolificinteractive:material-calendarview", version.ref = "materialCalendarview" }
+material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+prolificinteractive-material-calendarview = { module = "com.github.prolificinteractive:material-calendarview", version.ref = "materialCalendarviewVersion" }
 recyclerviewfastscroller = { module = "com.quiph.ui:recyclerviewfastscroller", version.ref = "recyclerviewfastscroller" }
+threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabp" }
+view = { module = "com.kizitonwose.calendar:view", version.ref = "view" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "gridlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }

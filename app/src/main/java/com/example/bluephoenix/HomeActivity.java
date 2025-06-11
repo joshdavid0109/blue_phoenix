@@ -1,27 +1,26 @@
 package com.example.bluephoenix;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater; // Keep if needed for other layouts not shown
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup; // Keep if needed for other layouts not shown
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import androidx.gridlayout.widget.GridLayout; // Make sure this is the import!
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -32,6 +31,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menuIcon;
+    private ImageView homeIcon;
 
     private TextView nav_username_display;
 
@@ -97,7 +98,9 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     static {
         // Example structure - update these based on your actual Firestore subcollections
         MAIN_TOPIC_SUBCOLLECTIONS.put("Civil Law", Arrays.asList(
-                "Persons and Family Relations", "Property", "Obligations and Contracts", "Torts and Damages"
+                "Persons and Family Relations", "Property", "Obligations and Contracts",
+                "Torts and Damages", "Land Titles and Deeds", "Muslim Personal Laws",
+                "Property", "Special Contracts", "Succession"
         ));
         MAIN_TOPIC_SUBCOLLECTIONS.put("Criminal Law", Arrays.asList(
                 "Revised Penal Code", "Special Penal Laws", "Criminal Procedure"
@@ -106,10 +109,13 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 "Bill of Rights", "Separation of Powers", "Local Government"
         ));
         MAIN_TOPIC_SUBCOLLECTIONS.put("Remedial Law", Arrays.asList(
-                "Civil Procedure", "Criminal Procedure", "Evidence", "Special Proceedings"
+                "Civil Procedure", "Criminal Procedure", "Evidence", "Special Proceedings",
+                "Laws on Jurisdiction"
         ));
         MAIN_TOPIC_SUBCOLLECTIONS.put("Commercial Law", Arrays.asList(
-                "Corporation Code", "Securities Regulation", "Banking Laws", "Insurance Code"
+                "Anti-Trust", "Banking", "Business Organizations", "Credit Transactions",
+                "Data Privacy", "Financiaal Rehabilitation", "Insurance", "Intellectual Property",
+                "Negotiable Instrument", "Securities", "Transportation", "Other Special Laws"
         ));
         MAIN_TOPIC_SUBCOLLECTIONS.put("Taxation Law", Arrays.asList(
                 "National Internal Revenue Code", "Local Government Code", "Customs and Tariff Code"
@@ -202,6 +208,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         nav_username_display = headerView.findViewById(R.id.nav_header_title);
+        navigationView.setCheckedItem(R.id.nav_home);
 
         // Update nav_username_display immediately if firstName is known from previous state or intent
         if (currentFirstName != null && !currentFirstName.isEmpty()) {
@@ -213,6 +220,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         menuIcon = findViewById(R.id.menu_icon);
+        homeIcon = findViewById(R.id.home_icon);
 
         home_search_field = findViewById(R.id.home_search_field);
 
@@ -235,6 +243,13 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             } else {
                 drawerLayout.openDrawer(navigationView);
             }
+        });
+
+        homeIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish(); // Finish current activity to prevent building up activity stack
         });
 
         logOutBtn.setOnClickListener(v -> showLogoutConfirmationDialog());
@@ -448,87 +463,85 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         Log.d("HomeActivity", "Searching in: " + mainTopic + "/" + subTopic + " for: " + query);
 
         db.collection("codals").document(mainTopic)
-                .collection(subTopic)
+                .collection("subtopics") // <--- ADD THIS COLLECTION NAME
+                .document(subTopic)      // <--- AND MAKE subTopic A DOCUMENT, NOT A COLLECTION
+                .collection("chapters")  // <--- This remains correct as a subcollection of the subTopic document
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d("HomeActivity", "Found " + queryDocumentSnapshots.size() + " documents in " + mainTopic + "/" + subTopic);
+                    Log.d("HomeActivity", "Found " + queryDocumentSnapshots.size() + " documents in " + mainTopic + "/subtopics/" + subTopic + "/chapters");
+
+                    // ... (rest of your existing logic for matching and adding to searchResults)
+
+                    String lowercasedQuery = query.toLowerCase(Locale.ROOT);
 
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String chapterTitle = document.getId();
-                        String sections = document.getString("sections"); // Verify "sections" field name if issues persist
 
-                        Log.d("HomeActivity", "Processing document ID: '" + chapterTitle + "' from " + mainTopic + "/" + subTopic);
-                        Log.d("HomeActivity", "Sections content: '" + sections + "'"); // Check content for null/empty
+                        Log.d("HomeActivity", "Processing document ID: '" + chapterTitle + "' from " + mainTopic + "/subtopics/" + subTopic + "/chapters");
 
                         boolean titleMatch = false;
 
                         // Check if chapter title matches search query
-                        if (chapterTitle != null && chapterTitle.toLowerCase(Locale.getDefault()).contains(query)) {
+                        if (chapterTitle != null && chapterTitle.toLowerCase(Locale.ROOT).contains(lowercasedQuery)) {
                             titleMatch = true;
-                            String path = "codals/" + mainTopic + "/" + subTopic + "/" + chapterTitle;
-
-                            // LOG THE VALUES BEFORE CREATING SearchItem
-                            Log.d("HomeActivity", "Creating Title Match SearchItem with:" +
-                                    " Title: '" + chapterTitle + "'" +
-                                    ", MainTopic: '" + mainTopic + "'" +
-                                    ", SubTopic: '" + subTopic + "'" +
-                                    ", OriginalChapterTitle (from chapterTitle): '" + chapterTitle + "'" +
-                                    ", Document ID: '" + document.getId() + "'" +
-                                    ", Path: '" + path + "'");
-
+                            // Corrected path for SearchItem as well
+                            String path = "codals/" + mainTopic + "/subtopics/" + subTopic + "/chapters/" + chapterTitle;
                             SearchItem item = new SearchItem(
                                     chapterTitle,
                                     mainTopic,
                                     subTopic,
-                                    chapterTitle, // This is the value that could be null
+                                    chapterTitle,
                                     document.getId(),
                                     path
                             );
-
                             synchronized (searchResults) {
                                 if (!searchResults.contains(item)) {
                                     searchResults.add(item);
                                     Log.d("HomeActivity", "Added title match: " + chapterTitle);
-                                } else {
-                                    Log.d("HomeActivity", "Skipped duplicate title match: " + chapterTitle);
                                 }
                             }
                         }
 
                         // Also search within the document's sections content
-                        if (sections != null && sections.toLowerCase(Locale.getDefault()).contains(query)) {
-                            String path = "codals/" + mainTopic + "/" + subTopic + "/" + chapterTitle;
+                        // *** --- CRITICAL CHANGE FOR "sections" FIELD --- ***
+                        List<Map<String, Object>> sectionsList = (List<Map<String, Object>>) document.get("sections");
 
-                            // LOG THE VALUES BEFORE CREATING SearchItem
-                            Log.d("HomeActivity", "Creating Content Match SearchItem with:" +
-                                    " Title: '" + chapterTitle + " (Content match)'" +
-                                    ", MainTopic: '" + mainTopic + "'" +
-                                    ", SubTopic: '" + subTopic + "'" +
-                                    ", OriginalChapterTitle (from chapterTitle): '" + chapterTitle + "'" +
-                                    ", Document ID: '" + document.getId() + "'" +
-                                    ", Path: '" + path + "'");
+                        if (sectionsList != null) {
+                            for (Map<String, Object> sectionMap : sectionsList) {
+                                if (sectionMap.containsKey("content")) {
+                                    Object contentObject = sectionMap.get("content");
+                                    if (contentObject instanceof String) {
+                                        String sectionContent = (String) contentObject;
+                                        Log.d("HomeActivity", "Processing section content: '" + sectionContent + "'");
 
-                            SearchItem item = new SearchItem(
-                                    chapterTitle + " (Content match)", // Append (Content match) to differentiate
-                                    mainTopic,
-                                    subTopic,
-                                    chapterTitle, // This is the value that could be null
-                                    document.getId(),
-                                    path
-                            );
-
-                            synchronized (searchResults) {
-                                if (!searchResults.contains(item)) {
-                                    searchResults.add(item);
-                                    Log.d("HomeActivity", "Added content match: " + chapterTitle);
-                                } else {
-                                    Log.d("HomeActivity", "Skipped duplicate content match: " + chapterTitle);
+                                        if (sectionContent.toLowerCase(Locale.ROOT).contains(lowercasedQuery)) {
+                                            String path = "codals/" + mainTopic + "/subtopics/" + subTopic + "/chapters/" + chapterTitle;
+                                            SearchItem item = new SearchItem(
+                                                    chapterTitle + " (Content match)", // Indicate it's a content match
+                                                    mainTopic,
+                                                    subTopic,
+                                                    chapterTitle,
+                                                    document.getId(),
+                                                    path
+                                            );
+                                            synchronized (searchResults) {
+                                                if (!searchResults.contains(item)) {
+                                                    searchResults.add(item);
+                                                    Log.d("HomeActivity", "Added content match for chapter: " + chapterTitle);
+                                                }
+                                            }
+                                            // Once a match is found in content, no need to check other sections of this chapter
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        // Search in additional fields
-                        searchInAdditionalFields(document, query, mainTopic, subTopic, chapterTitle);
+                        // Call searchInAdditionalFields for other fields if needed,
+                        // but ensure it also handles non-String types gracefully.
+                        // If 'sections' is ALSO passed to this, remove it from the list of fields to check here.
+                        // searchInAdditionalFields(document, lowercasedQuery, mainTopic, subTopic, chapterTitle);
                     }
 
                     if (onComplete != null) {
@@ -566,36 +579,23 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
             if (fieldValue instanceof String) {
                 String stringValue = (String) fieldValue;
-                if (stringValue.toLowerCase(Locale.getDefault()).contains(query)) {
-                    String path = "codals/" + mainTopic + "/" + subTopic + "/" + chapterTitle;
-
-                    // LOG THE VALUES BEFORE CREATING SearchItem
-                    Log.d("HomeActivity", "Creating Field Match SearchItem (" + fieldName + ") with:" +
-                            " Title: '" + chapterTitle + " (" + fieldName + " match)'" +
-                            ", MainTopic: '" + mainTopic + "'" +
-                            ", SubTopic: '" + subTopic + "'" +
-                            ", OriginalChapterTitle (from chapterTitle): '" + chapterTitle + "'" +
-                            ", Document ID: '" + document.getId() + "'" +
-                            ", Path: '" + path + "'");
-
+                if (stringValue.toLowerCase(Locale.ROOT).contains(query)) {
+                    String path = "codals/" + mainTopic + "/subtopics/" + subTopic + "/chapters/" + chapterTitle; // <--- Corrected path here too
                     SearchItem item = new SearchItem(
                             chapterTitle + " (" + fieldName + " match)",
                             mainTopic,
                             subTopic,
-                            chapterTitle, // This is the value that could be null
+                            chapterTitle,
                             document.getId(),
                             path
                     );
-
                     synchronized (searchResults) {
                         if (!searchResults.contains(item)) {
                             searchResults.add(item);
                             Log.d("HomeActivity", "Added " + fieldName + " match: " + chapterTitle);
-                        } else {
-                            Log.d("HomeActivity", "Skipped duplicate field match: " + chapterTitle);
                         }
                     }
-                    break; // Only add one match per document for additional fields
+                    break;
                 }
             }
         }
@@ -970,24 +970,79 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        // Add authentication check for any menu items that lead to authenticated content
-        if (currentUser == null) {
-            redirectToLogin();
-            return false; // Don't proceed with navigation if not authenticated
+        int id = item.getItemId();
+        Log.d(TAG, "onNavigationItemSelected: Item selected with ID: " + getResources().getResourceEntryName(id));
+        Intent navIntent = null; // Declare navIntent here
+
+        if (id == R.id.nav_home) {
+
+        } else if (id == R.id.nav_gallery) { // Assuming nav_gallery is your calendar item
+            // IMPORTANT: Only uncomment this if CalendarActivity.java exists and is declared in AndroidManifest.xml
+            // If you still have this item in your menu XML, this block WILL be entered.
+            // If CalendarActivity doesn't exist, uncommenting the line below WILL cause ActivityNotFoundException.
+            Toast.makeText(this, "Calendar selected", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "onNavigationItemSelected: Calendar item selected, but CalendarActivity is not implemented.");
+             navIntent = new Intent(HomeActivity.this, CalendarActivity.class); // Keep commented for now
+             if (currentUserId != null && currentFirstName != null) {
+                 navIntent.putExtra("USER_ID", currentUserId);
+                 navIntent.putExtra("USER_NAME", currentFirstName);
+             }
+        } else if (id == R.id.nav_slideshow) { // Assuming nav_slideshow is your forum item
+            Toast.makeText(this, "Forum Selected", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onNavigationItemSelected: Forum item selected, already in ForumActivity. No navigation.");
+            Toast.makeText(this, "Navigating to Home.", Toast.LENGTH_SHORT).show();
+            navIntent = new Intent(HomeActivity.this, ForumActivity.class);
+            if (currentUserId != null && currentFirstName != null) { // Always pass user data if possible
+                navIntent.putExtra("USER_ID", currentUserId);
+                navIntent.putExtra("USER_NAME", currentFirstName);
+                Log.d(TAG, "onNavigationItemSelected: Passing USER_ID: " + currentUserId + ", USER_NAME: " + currentFirstName + " to HomeActivity.");
+            } else {
+                Log.w(TAG, "onNavigationItemSelected: User ID or Name is null, not passing to HomeActivity.");
+            }
+            // Do not set navIntent if you're staying on the same activity, so the 'if (navIntent != null)' block is skipped.
+            // Or set it if you *do* want to restart the activity (e.g., for refresh).
+            // Example to restart:
+            // navIntent = new Intent(ForumActivity.this, ForumActivity.class);
+            // if (loggedInUserId != null && loggedInUserName != null) {
+            //     navIntent.putExtra("USER_ID", loggedInUserId);
+            //     navIntent.putExtra("USER_NAME", loggedInUserName);
+            // }
+        } else if (id == R.id.nav_share) { // About Us (Assuming this was the correct ID for About Us)
+            Toast.makeText(this, "About Us selected (Feature not yet implemented).", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "onNavigationItemSelected: About Us item selected, but AboutUsActivity is not implemented.");
+            // navIntent = new Intent(ForumActivity.this, AboutUsActivity.class); // Keep commented for now
+            // if (loggedInUserId != null && loggedInUserName != null) {
+            //     navIntent.putExtra("USER_ID", loggedInUserId);
+            //     navIntent.putExtra("USER_NAME", loggedInUserName);
+            // }
+        } else if (id == R.id.nav_send) { // FAQs (Assuming this was the correct ID for FAQs)
+            Toast.makeText(this, "FAQs selected (Feature not yet implemented).", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "onNavigationItemSelected: FAQs item selected, but FAQsActivity is not implemented.");
+            // navIntent = new Intent(ForumActivity.this, FAQsActivity.class); // Keep commented for now
+            // if (loggedInUserId != null && loggedInUserName != null) {
+            //     navIntent.putExtra("USER_ID", loggedInUserId);
+            //     navIntent.putExtra("USER_NAME", loggedInUserName);
+            // }
+        } else {
+            Log.w(TAG, "onNavigationItemSelected: Unhandled menu item ID: " + item.getItemId() + " (Resource Name: " + getResources().getResourceEntryName(id) + "). No navigation performed.");
+            Toast.makeText(this, "Selected feature not available yet.", Toast.LENGTH_SHORT).show();
         }
 
-        int id = item.getItemId();
-        // Example: if you have a menu item for profile
-        // if (id == R.id.nav_profile) {
-        //     // Handle profile click
-        //     Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show();
-        // } else
-        if (id == R.id.nav_logout) { // Assuming you have a logout item in your nav menu
-            showLogoutConfirmationDialog();
+        if (navIntent != null) {
+            Log.d(TAG, "onNavigationItemSelected: Starting new activity: " + navIntent.getComponent().getClassName());
+            startActivity(navIntent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish(); // Finish current activity to prevent building up activity stack
+        } else {
+            Log.d(TAG, "onNavigationItemSelected: navIntent is null. No new activity started.");
         }
-        // Close drawer after selection
-        drawerLayout.closeDrawer(navigationView);
+
+        if (drawerLayout != null && navigationView != null) { // Null check for safety
+            drawerLayout.closeDrawer(navigationView);
+            Log.d(TAG, "onNavigationItemSelected: Drawer closed.");
+        } else {
+            Log.e(TAG, "onNavigationItemSelected: DrawerLayout or NavigationView is null, cannot close drawer.");
+        }
         return true;
     }
 }

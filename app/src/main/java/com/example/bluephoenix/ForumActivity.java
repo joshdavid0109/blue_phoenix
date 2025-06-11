@@ -124,6 +124,7 @@ public class ForumActivity extends AppCompatActivity implements
         }
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
+            navigationView.setCheckedItem(R.id.nav_slideshow);
             Log.d(TAG, "onCreate: NavigationView listener set.");
 
             // Set header user info if you have a TextViews in nav_header_main.xml

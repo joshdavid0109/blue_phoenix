@@ -57,6 +57,13 @@ dependencies {
 
     // Other libraries
     implementation(libs.swiperefreshlayout)
+    implementation(libs.prolificinteractive.material.calendarview)
+    implementation(libs.view)
+    implementation(libs.threetenabp)
+    implementation(libs.material.v190)
+
+
+    implementation(libs.view)
 
     // Testing
     testImplementation(libs.junit)
