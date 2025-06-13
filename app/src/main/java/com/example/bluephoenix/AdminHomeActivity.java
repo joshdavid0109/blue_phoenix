@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HomeActivity extends AppCompatActivity implements GetUserNameDialogFragment.NameInputDialogListener, NavigationView.OnNavigationItemSelectedListener {
+public class AdminHomeActivity extends AppCompatActivity implements GetUserNameDialogFragment.NameInputDialogListener, NavigationView.OnNavigationItemSelectedListener {
     private TextView welcomeTextView;
     private FirebaseFirestore db;
     private CardView cardViewCivil;
@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     // Search functionality
     private RecyclerView searchResultsRecyclerView;
     private FirestoreSearchAdapter searchAdapter;
-    private List<SearchItem> searchResults;
+    private List<HomeActivity.SearchItem> searchResults;
     private LinearLayout contentLayout;
 
     private GridLayout gridLayout;
@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     }
 
     // Search item class to hold search results
-    public static class SearchItem {
+    public static class SearchItem extends HomeActivity.SearchItem {
         private String title;
         private String mainTopic;
         private String subTopic;
@@ -167,9 +167,6 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             this.originalChapterTitle = Objects.requireNonNullElse(originalChapterTitle, ""); // Defensive check here!
             this.documentId = Objects.requireNonNullElse(documentId, "");
             this.path = Objects.requireNonNullElse(path, "");
-        }
-
-        public SearchItem() {
         }
 
         // Getters
@@ -221,12 +218,12 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             // User is not authenticated, redirect to LoginActivity
-            Log.d("HomeActivity", "User not authenticated. Redirecting to LoginActivity.");
+            Log.d("AdminHomeActivity", "User not authenticated. Redirecting to LoginActivity.");
             redirectToLogin();
             return; // Stop further execution of onCreate
         } else {
             currentUserId = currentUser.getUid(); // Set currentUserId from authenticated user
-            Log.d("HomeActivity", "User authenticated: " + currentUserId);
+            Log.d("AdminHomeActivity", "User authenticated: " + currentUserId);
         }
         // --- End of authentication check ---
 
@@ -326,7 +323,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         });
 
         homeIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, AdminHomeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish(); // Finish current activity to prevent building up activity stack
@@ -335,7 +332,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         logOutBtn.setOnClickListener(v -> showLogoutConfirmationDialog());
     }
 
-    // Enhanced search implementation - Add these methods to your HomeActivity class
+    // Enhanced search implementation - Add these methods to your AdminHomeActivity class
 
     private Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
@@ -380,7 +377,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
                 if (currentInput.isEmpty()) {
                     // If the field is now empty (e.g., due to backspacing all text)
-                    Log.d("HomeActivity", "Search field is now empty. Triggering UI update.");
+                    Log.d("AdminHomeActivity", "Search field is now empty. Triggering UI update.");
                     // Clear any previous search results from the adapter and list
                     searchResults.clear();
                     searchAdapter.notifyDataSetChanged(); // Notifying here ensures RecyclerView is empty
@@ -471,7 +468,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private void searchFirestore(String query) {
         // Ensure user is authenticated before performing search
         if (currentUser == null) {
-            Log.e("HomeActivity", "searchFirestore: User not authenticated.");
+            Log.e("AdminHomeActivity", "searchFirestore: User not authenticated.");
             redirectToLogin();
             return;
         }
@@ -503,7 +500,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             }
         }
 
-        Log.d("HomeActivity", "Starting search for: '" + query + "' with total searches: " + totalSearches.get());
+        Log.d("AdminHomeActivity", "Starting search for: '" + query + "' with total searches: " + totalSearches.get());
 
         // If no searches to perform, update UI immediately
         if (totalSearches.get() == 0) {
@@ -519,7 +516,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 for (String subTopic : subTopics) {
                     searchInChapters(mainTopic, subTopic, lowerQuery, () -> {
                         int completed = completedSearches.incrementAndGet();
-                        Log.d("HomeActivity", "Completed search " + completed + " of " + totalSearches.get());
+                        Log.d("AdminHomeActivity", "Completed search " + completed + " of " + totalSearches.get());
                         if (completed >= totalSearches.get()) {
                             showSearchState(false);
                             updateSearchResultsUI();
@@ -533,14 +530,14 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private void searchInChapters(String mainTopic, String subTopic, String query, Runnable onComplete) {
         // Ensure user is authenticated before accessing Firestore
         if (currentUser == null) {
-            Log.e("HomeActivity", "searchInChapters: User not authenticated. Cannot search Firestore.");
+            Log.e("AdminHomeActivity", "searchInChapters: User not authenticated. Cannot search Firestore.");
             if (onComplete != null) {
                 onComplete.run(); // Ensure onComplete is called to prevent hang if authentication fails
             }
             return;
         }
 
-        Log.d("HomeActivity", "Searching in: " + mainTopic + "/" + subTopic + " for: " + query);
+        Log.d("AdminHomeActivity", "Searching in: " + mainTopic + "/" + subTopic + " for: " + query);
 
         db.collection("codals").document(mainTopic)
                 .collection("subtopics") // <--- ADD THIS COLLECTION NAME
@@ -548,7 +545,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 .collection("chapters")  // <--- This remains correct as a subcollection of the subTopic document
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d("HomeActivity", "Found " + queryDocumentSnapshots.size() + " documents in " + mainTopic + "/subtopics/" + subTopic + "/chapters");
+                    Log.d("AdminHomeActivity", "Found " + queryDocumentSnapshots.size() + " documents in " + mainTopic + "/subtopics/" + subTopic + "/chapters");
 
                     // ... (rest of your existing logic for matching and adding to searchResults)
 
@@ -557,7 +554,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String chapterTitle = document.getId();
 
-                        Log.d("HomeActivity", "Processing document ID: '" + chapterTitle + "' from " + mainTopic + "/subtopics/" + subTopic + "/chapters");
+                        Log.d("AdminHomeActivity", "Processing document ID: '" + chapterTitle + "' from " + mainTopic + "/subtopics/" + subTopic + "/chapters");
 
                         boolean titleMatch = false;
 
@@ -577,7 +574,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                             synchronized (searchResults) {
                                 if (!searchResults.contains(item)) {
                                     searchResults.add(item);
-                                    Log.d("HomeActivity", "Added title match: " + chapterTitle);
+                                    Log.d("AdminHomeActivity", "Added title match: " + chapterTitle);
                                 }
                             }
                         }
@@ -592,7 +589,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                                     Object contentObject = sectionMap.get("content");
                                     if (contentObject instanceof String) {
                                         String sectionContent = (String) contentObject;
-                                        Log.d("HomeActivity", "Processing section content: '" + sectionContent + "'");
+                                        Log.d("AdminHomeActivity", "Processing section content: '" + sectionContent + "'");
 
                                         if (sectionContent.toLowerCase(Locale.ROOT).contains(lowercasedQuery)) {
                                             String path = "codals/" + mainTopic + "/subtopics/" + subTopic + "/chapters/" + chapterTitle;
@@ -607,7 +604,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                                             synchronized (searchResults) {
                                                 if (!searchResults.contains(item)) {
                                                     searchResults.add(item);
-                                                    Log.d("HomeActivity", "Added content match for chapter: " + chapterTitle);
+                                                    Log.d("AdminHomeActivity", "Added content match for chapter: " + chapterTitle);
                                                 }
                                             }
                                             // Once a match is found in content, no need to check other sections of this chapter
@@ -629,10 +626,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("HomeActivity", "Error searching chapters in " + mainTopic + "/" + subTopic, e);
+                    Log.e("AdminHomeActivity", "Error searching chapters in " + mainTopic + "/" + subTopic, e);
                     // Check if the error is due to permission denied
                     if (e.getMessage() != null && e.getMessage().contains("PERMISSION_DENIED")) {
-                        Toast.makeText(HomeActivity.this, "Authentication required to access content.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AdminHomeActivity.this, "Authentication required to access content.", Toast.LENGTH_LONG).show();
                         redirectToLogin(); // Redirect if permission denied
                     }
                     if (onComplete != null) {
@@ -645,7 +642,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                                           String mainTopic, String subTopic, String chapterTitle) {
         // Ensure user is authenticated before accessing Firestore
         if (currentUser == null) {
-            Log.e("HomeActivity", "searchInAdditionalFields: User not authenticated.");
+            Log.e("AdminHomeActivity", "searchInAdditionalFields: User not authenticated.");
             return;
         }
 
@@ -672,7 +669,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                     synchronized (searchResults) {
                         if (!searchResults.contains(item)) {
                             searchResults.add(item);
-                            Log.d("HomeActivity", "Added " + fieldName + " match: " + chapterTitle);
+                            Log.d("AdminHomeActivity", "Added " + fieldName + " match: " + chapterTitle);
                         }
                     }
                     break;
@@ -683,7 +680,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
     private void updateSearchResultsUI() {
         runOnUiThread(() -> {
-            Log.d("HomeActivity", "Updating UI with " + searchResults.size() + " results");
+            Log.d("AdminHomeActivity", "Updating UI with " + searchResults.size() + " results");
 
             String currentQuery = home_search_field.getText().toString().trim();
 
@@ -696,7 +693,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
             if (currentQuery.isEmpty()) {
                 // SCENARIO 1: Search field is EMPTY
-                Log.d("HomeActivity", "Search query is empty. Showing main content (ScrollView) and GridLayout.");
+                Log.d("AdminHomeActivity", "Search query is empty. Showing main content (ScrollView) and GridLayout.");
 
 
                 // Explicitly show the GridLayout
@@ -708,7 +705,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
             } else {
                 // SCENARIO 2: Search field has a QUERY (not empty)
-                Log.d("HomeActivity", "Search query active: '" + currentQuery + "'. Hiding main content and GridLayout.");
+                Log.d("AdminHomeActivity", "Search query active: '" + currentQuery + "'. Hiding main content and GridLayout.");
 
 
                 // Explicitly hide the GridLayout
@@ -716,7 +713,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
                 if (!searchResults.isEmpty()) {
                     // SUB-SCENARIO 2a: Results found for the query
-                    Log.d("HomeActivity", "Showing search results RecyclerView.");
+                    Log.d("AdminHomeActivity", "Showing search results RecyclerView.");
                     searchResultsRecyclerView.setVisibility(View.VISIBLE);
 
                     // Sort results
@@ -731,26 +728,26 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
                     searchAdapter.setSearchQuery(currentQuery);
                     searchAdapter.notifyDataSetChanged();
-                    Log.d("HomeActivity", "Search results adapter notified.");
+                    Log.d("AdminHomeActivity", "Search results adapter notified.");
 
                 } else {
                     // SUB-SCENARIO 2b: No results found for the current query
-                    Log.d("HomeActivity", "No results found for query '" + currentQuery + "'. Showing no_results_text.");
+                    Log.d("AdminHomeActivity", "No results found for query '" + currentQuery + "'. Showing no_results_text.");
                     no_results_text.setVisibility(View.VISIBLE); // Show "No results found" message
                 }
             }
         });
     }
 
-    private void navigateToContent(SearchItem item) {
+    private void navigateToContent(HomeActivity.SearchItem item) {
         // Ensure user is authenticated before navigating to content
         if (currentUser == null) {
-            Log.e("HomeActivity", "navigateToContent: User not authenticated.");
+            Log.e("AdminHomeActivity", "navigateToContent: User not authenticated.");
             redirectToLogin();
             return;
         }
 
-        Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+        Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
         intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, item.getMainTopic());
         intent.putExtra("SUB_TOPIC", item.getSubTopic());
         intent.putExtra("CHAPTER_TITLE", item.getOriginalChapterTitle());
@@ -758,7 +755,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         intent.putExtra("FIRESTORE_PATH", item.getPath());
         intent.putExtra("SEARCH_QUERY", home_search_field.getText().toString()); // Pass search query if needed
 
-        Log.d("HomeActivity", "Navigating to: " + item.getPath());
+        Log.d("AdminHomeActivity", "Navigating to: " + item.getPath());
         startActivityForResult(intent, SEARCH_REQUEST_CODE);
 
         Toast.makeText(this, "Opening: " + item.getTitle().replace(" (Content match)", "").replace(" (Content match)", ""), Toast.LENGTH_SHORT).show();
@@ -767,7 +764,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private void performSearch() {
         // Ensure user is authenticated before performing search
         if (currentUser == null) {
-            Log.e("HomeActivity", "performSearch: User not authenticated.");
+            Log.e("AdminHomeActivity", "performSearch: User not authenticated.");
             redirectToLogin();
             return;
         }
@@ -824,49 +821,49 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
         cardViewCivil.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Civil Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Civil Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Civil Law");
             startActivity(intent);
         });
 
         cardViewCommercial.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Commercial Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Commercial Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Commercial Law");
             startActivity(intent);
         });
 
         cardViewRem.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Remedial Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Remedial Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Remedial Law");
             startActivity(intent);
         });
 
         cardViewCriminal.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Criminal Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Criminal Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Criminal Law");
             startActivity(intent);
         });
 
         cardViewConstitutional.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Constitutional Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Constitutional Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Constitutional Law");
             startActivity(intent);
         });
 
         cardViewTaxation.setOnClickListener(v -> {
             if (currentUser == null) { redirectToLogin(); return; }
-            Intent intent = new Intent(HomeActivity.this, ReviewerActivity.class);
+            Intent intent = new Intent(AdminHomeActivity.this, ReviewerActivity.class);
             intent.putExtra(ReviewerActivity.EXTRA_SELECTED_MAIN_TOPIC, "Taxation Law");
-            Log.d("HomeActivity", "Starting ReviewerActivity for: Taxation Law");
+            Log.d("AdminHomeActivity", "Starting ReviewerActivity for: Taxation Law");
             startActivity(intent);
         });
     }
@@ -874,7 +871,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private void setupUserData() {
         // In onCreate, we now ensure currentUser is not null.
         // So, currentUserId will always be available here.
-        Log.d("HomeActivity", "setupUserData() - currentUserId: " + currentUserId);
+        Log.d("AdminHomeActivity", "setupUserData() - currentUserId: " + currentUserId);
 
         // Check if firstName is passed from intent (e.g., from a new user registration)
         String firstNameFromIntent = getIntent().getStringExtra("FIRST_NAME");
@@ -910,7 +907,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         outState.putString("FIRST_NAME", currentFirstName);
         outState.putString("USER_ID", currentUserId);
         outState.putBoolean("IS_NEW_USER", isNewUser);
-        Log.d("HomeActivity", "onSaveInstanceState() - Saving currentFirstName: " + currentFirstName + ", currentUserId: " + currentUserId + ", isNewUser: " + isNewUser);
+        Log.d("AdminHomeActivity", "onSaveInstanceState() - Saving currentFirstName: " + currentFirstName + ", currentUserId: " + currentUserId + ", isNewUser: " + isNewUser);
     }
 
     @Override
@@ -918,7 +915,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         super.onResume();
         currentUser = mAuth.getCurrentUser(); // Re-check user status on resume
         if (currentUser == null) {
-            Log.d("HomeActivity", "onResume() - User not authenticated. Redirecting.");
+            Log.d("AdminHomeActivity", "onResume() - User not authenticated. Redirecting.");
             redirectToLogin();
             return;
         }
@@ -927,14 +924,14 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
 
 
-        Log.d("HomeActivity", "onResume() - userId: " + currentUserId + ", currentFirstName: " + currentFirstName + ", welcomeText: " + welcomeTextView.getText().toString());
+        Log.d("AdminHomeActivity", "onResume() - userId: " + currentUserId + ", currentFirstName: " + currentFirstName + ", welcomeText: " + welcomeTextView.getText().toString());
 
         // Only fetch user data if currentFirstName is not set or if there was an error/default welcome text
         if (currentUserId != null && (currentFirstName == null || currentFirstName.isEmpty() || welcomeTextView.getText().toString().startsWith("Welcome") || welcomeTextView.getText().toString().contains("Error"))) {
-            Log.d("HomeActivity", "onResume() - Calling fetchUserData() because name is missing or generic.");
+            Log.d("AdminHomeActivity", "onResume() - Calling fetchUserData() because name is missing or generic.");
             fetchUserData(currentUserId);
         }
-        Log.d("HomeActivity", "onResume() - Finished");
+        Log.d("AdminHomeActivity", "onResume() - Finished");
         home_search_field.setText("");
         searchResultsRecyclerView.setVisibility(View.GONE);
         contentLayout.setVisibility(View.VISIBLE);
@@ -943,7 +940,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
     private void showGetUserNameDialog() {
         GetUserNameDialogFragment dialog = new GetUserNameDialogFragment();
         dialog.show(getSupportFragmentManager(), "get_user_name_dialog");
-        Log.d("HomeActivity", "showGetUserNameDialog() - Shown");
+        Log.d("AdminHomeActivity", "showGetUserNameDialog() - Shown");
     }
 
     @Override
@@ -958,33 +955,33 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             if (currentUser != null) {
                 updateUserNameInFirestore(currentUser.getUid(), name);
                 currentUserId = currentUser.getUid(); // Ensure currentUserId is consistent
-                Log.d("HomeActivity", "onNameEntered() - Name entered: " + name + ", updated UI and Firestore, currentUserId: " + currentUserId);
+                Log.d("AdminHomeActivity", "onNameEntered() - Name entered: " + name + ", updated UI and Firestore, currentUserId: " + currentUserId);
             } else {
-                Log.e("HomeActivity", "onNameEntered: User is null after name entry, cannot update Firestore.");
+                Log.e("AdminHomeActivity", "onNameEntered: User is null after name entry, cannot update Firestore.");
                 redirectToLogin();
             }
         } else {
             welcomeTextView.setText("Hello!");
-            Log.d("HomeActivity", "onNameEntered() - Empty name entered");
+            Log.d("AdminHomeActivity", "onNameEntered() - Empty name entered");
         }
     }
 
     private void updateUserNameInFirestore(String userId, String name) {
         // Ensure user is authenticated for this write operation
         if (currentUser == null || !currentUser.getUid().equals(userId)) {
-            Log.e("HomeActivity", "updateUserNameInFirestore: User not authenticated or mismatched UID. Cannot update.");
+            Log.e("AdminHomeActivity", "updateUserNameInFirestore: User not authenticated or mismatched UID. Cannot update.");
             redirectToLogin();
             return;
         }
 
         DocumentReference userRef = db.collection("users").document(userId);
         userRef.update("name", name)
-                .addOnSuccessListener(aVoid -> Log.d("HomeActivity", "updateUserNameInFirestore() - Success"))
+                .addOnSuccessListener(aVoid -> Log.d("AdminHomeActivity", "updateUserNameInFirestore() - Success"))
                 .addOnFailureListener(e -> {
-                    Log.e("HomeActivity", "updateUserNameInFirestore() - Error: " + e.getMessage(), e);
+                    Log.e("AdminHomeActivity", "updateUserNameInFirestore() - Error: " + e.getMessage(), e);
                     // Handle specific errors like PERMISSION_DENIED
                     if (e.getMessage() != null && e.getMessage().contains("PERMISSION_DENIED")) {
-                        Toast.makeText(HomeActivity.this, "Permission denied to update user data. Please re-authenticate.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AdminHomeActivity.this, "Permission denied to update user data. Please re-authenticate.", Toast.LENGTH_LONG).show();
                         redirectToLogin();
                     }
                 });
@@ -996,25 +993,25 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                 .setMessage("Are you sure you want to log out from your account?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     mAuth.signOut();
-                    Log.d("HomeActivity", "showLogoutConfirmationDialog() - Logged out");
+                    Log.d("AdminHomeActivity", "showLogoutConfirmationDialog() - Logged out");
                     redirectToLogin(); // Redirect to login after logout
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-        Log.d("HomeActivity", "showLogoutConfirmationDialog() - Shown");
+        Log.d("AdminHomeActivity", "showLogoutConfirmationDialog() - Shown");
     }
 
     private void fetchUserData(String userId) {
         // Ensure user is authenticated for this read operation
         if (currentUser == null || !currentUser.getUid().equals(userId)) {
-            Log.e("HomeActivity", "fetchUserData: User not authenticated or mismatched UID. Cannot fetch.");
+            Log.e("AdminHomeActivity", "fetchUserData: User not authenticated or mismatched UID. Cannot fetch.");
             redirectToLogin();
             return;
         }
 
         DocumentReference userRef = db.collection("users").document(userId);
-        Log.d("HomeActivity", "fetchUserData() - Fetching for userId: " + userId);
+        Log.d("AdminHomeActivity", "fetchUserData() - Fetching for userId: " + userId);
         userRef.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -1023,22 +1020,22 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
                             String name = document.getString("name");
                             currentFirstName = name;
                             welcomeTextView.setText("Hello, " + name);
-                            Log.d("HomeActivity", "fetchUserData() - Success, name: " + name);
+                            Log.d("AdminHomeActivity", "fetchUserData() - Success, name: " + name);
                             if (nav_username_display != null) {
                                 nav_username_display.setText(currentFirstName);
                             }
                         } else {
                             welcomeTextView.setText("Welcome!"); // Default if no name found
-                            Log.w("HomeActivity", "fetchUserData() - No user data found in Firestore for this UID: " + userId + ". Showing GetUserNameDialog.");
+                            Log.w("AdminHomeActivity", "fetchUserData() - No user data found in Firestore for this UID: " + userId + ". Showing GetUserNameDialog.");
                             // If user document doesn't exist for an authenticated user, prompt for name
                             showGetUserNameDialog();
                         }
                     } else {
                         // Handle failure, especially permission denied errors
-                        Log.e("HomeActivity", "fetchUserData() - Error getting document: " + task.getException().getMessage(), task.getException());
+                        Log.e("AdminHomeActivity", "fetchUserData() - Error getting document: " + task.getException().getMessage(), task.getException());
                         welcomeTextView.setText("Welcome!"); // Default in case of error
                         if (task.getException() != null && task.getException().getMessage() != null && task.getException().getMessage().contains("PERMISSION_DENIED")) {
-                            Toast.makeText(HomeActivity.this, "Permission denied to read user data. Please re-authenticate.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AdminHomeActivity.this, "Permission denied to read user data. Please re-authenticate.", Toast.LENGTH_LONG).show();
                             redirectToLogin(); // Redirect if permission denied
                         }
                     }
@@ -1047,10 +1044,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
 
     // New helper method to redirect to LoginActivity
     private void redirectToLogin() {
-        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+        Intent intent = new Intent(AdminHomeActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish(); // Finish HomeActivity so user can't go back
+        finish(); // Finish AdminHomeActivity so user can't go back
     }
 
     @Override
@@ -1060,10 +1057,10 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         Intent navIntent = null; // Declare navIntent here
 
         if (id == R.id.nav_home) {
-            // If already in HomeActivity, you might not want to do anything or
+            // If already in AdminHomeActivity, you might not want to do anything or
             // you might want to re-initialize it. For simply "going back", no action needed here.
-            // If you want to force a refresh of HomeActivity, uncomment the line below.
-            // navIntent = new Intent(HomeActivity.this, HomeActivity.class);
+            // If you want to force a refresh of AdminHomeActivity, uncomment the line below.
+            // navIntent = new Intent(AdminHomeActivity.this, AdminHomeActivity.class);
             // if (currentUserId != null && currentFirstName != null) {
             //     navIntent.putExtra("USER_ID", currentUserId);
             //     navIntent.putExtra("USER_NAME", currentFirstName);
@@ -1071,7 +1068,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         } else if (id == R.id.nav_gallery) { // Assuming nav_gallery is your calendar item
             Toast.makeText(this, "Calendar selected", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "onNavigationItemSelected: Calendar item selected.");
-            navIntent = new Intent(HomeActivity.this, CalendarActivity.class); // Uncomment when CalendarActivity exists
+            navIntent = new Intent(AdminHomeActivity.this, CalendarActivity.class); // Uncomment when CalendarActivity exists
             if (currentUserId != null && currentFirstName != null) {
                 navIntent.putExtra("USER_ID", currentUserId);
                 navIntent.putExtra("USER_NAME", currentFirstName);
@@ -1079,7 +1076,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
         } else if (id == R.id.nav_slideshow) { // Assuming nav_slideshow is your forum item
             Toast.makeText(this, "Forum Selected", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "onNavigationItemSelected: Forum item selected.");
-            navIntent = new Intent(HomeActivity.this, ForumActivity.class);
+            navIntent = new Intent(AdminHomeActivity.this, ForumActivity.class);
             if (currentUserId != null && currentFirstName != null) { // Always pass user data if possible
                 navIntent.putExtra("USER_ID", currentUserId);
                 navIntent.putExtra("USER_NAME", currentFirstName);
@@ -1091,7 +1088,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             Toast.makeText(this, "About Us selected (Feature not yet implemented).", Toast.LENGTH_SHORT).show();
             Log.w(TAG, "onNavigationItemSelected: About Us item selected, but AboutUsActivity is not implemented.");
             // Uncomment the following when AboutUsActivity is implemented:
-            // navIntent = new Intent(HomeActivity.this, AboutUsActivity.class);
+            // navIntent = new Intent(AdminHomeActivity.this, AboutUsActivity.class);
             // if (currentUserId != null && currentFirstName != null) {
             //     navIntent.putExtra("USER_ID", currentUserId);
             //     navIntent.putExtra("USER_NAME", currentFirstName);
@@ -1100,7 +1097,7 @@ public class HomeActivity extends AppCompatActivity implements GetUserNameDialog
             Toast.makeText(this, "FAQs selected (Feature not yet implemented).", Toast.LENGTH_SHORT).show();
             Log.w(TAG, "onNavigationItemSelected: FAQs item selected, but FAQsActivity is not implemented.");
             // Uncomment the following when FAQsActivity is implemented:
-            // navIntent = new Intent(HomeActivity.this, FAQsActivity.class);
+            // navIntent = new Intent(AdminHomeActivity.this, FAQsActivity.class);
             // if (currentUserId != null && currentFirstName != null) {
             //     navIntent.putExtra("USER_ID", currentUserId);
             //     navIntent.putExtra("USER_NAME", currentFirstName);

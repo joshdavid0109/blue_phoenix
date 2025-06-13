@@ -9,4 +9,28 @@
         <item name="android:textColorHint">@color/bp_name_light_blue</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="WhiteAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+
+        <item name="android:textColorPrimary">@color/black</item> <!-- For dialog title -->
+        <item name="android:textColorAlertDialogListItem">@color/black</item> <!-- For list items in dialog -->
+
+        <!-- colorAccent influences default button color, ripple, and focus.
+             Keep it as bp_name_light_blue if you like that for the ripple effect.
+             The specific button styles below will override its effect on text color. -->
+        <item name="colorAccent">@color/bp_name_light_blue</item>
+
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/bp_bg</item> <!-- CHANGED! -->
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

@@ -268,7 +268,7 @@
                 android:layout_weight="1"
                 android:hint="Add a comment..."
                 android:textColorHint="@color/gray"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:background="@drawable/search_bar_border"
                 android:padding="10dp"
                 android:maxLines="4"

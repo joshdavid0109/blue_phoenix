@@ -3,7 +3,7 @@ package com.example.bluephoenix;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.util.DisplayMetrics; // Needed for ChapterSmoothScroller
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller; // Needed for ChapterSmoothScroller
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.l4digital.fastscroll.FastScroller;
@@ -64,6 +64,10 @@ public class FastScrollTOCHandler {
     // Track last highlighted chapter to avoid unnecessary updates
     private int lastHighlightedChapter = -1;
 
+    // New flag to differentiate manual scrolling from fast-scroller interaction
+    private boolean isManualScrolling = false;
+
+
     public FastScrollTOCHandler(Context context,
                                 FastScrollRecyclerView recyclerView,
                                 View tocPopup,
@@ -98,6 +102,7 @@ public class FastScrollTOCHandler {
             public void onFastScrollStart(FastScroller fastScroller) {
                 Log.d("TOC_DEBUG_ACTIVITY", "onFastScrollStart");
                 isFastScrollingActive = true;
+                isManualScrolling = false; // Not manual scrolling if fast scroll starts
                 cancelHideToc();
                 showTocPopup();
             }
@@ -106,6 +111,8 @@ public class FastScrollTOCHandler {
             public void onFastScrollStop(FastScroller fastScroller) {
                 Log.d("TOC_DEBUG_ACTIVITY", "onFastScrollStop");
                 isFastScrollingActive = false;
+                // Immediately update highlight on stop to ensure it's correct
+                updateTocHighlight();
                 hideTocPopupDelayed();
             }
         });
@@ -114,9 +121,10 @@ public class FastScrollTOCHandler {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                // Always try to update highlight when scrolled, but the updateTocHighlight
-                // method will handle whether to actually apply the highlight based on flags.
-                if (isTocVisible) {
+
+                // Only update TOC highlight if the TOC is currently visible
+                // and if it's either fast-scrolling or a TOC-click scroll
+                if (isTocVisible && (isFastScrollingActive || isScrollFromTocClick)) {
                     updateTocHighlight();
                 }
             }
@@ -128,13 +136,14 @@ public class FastScrollTOCHandler {
                         ", isFastScrollingActive: " + isFastScrollingActive +
                         ", isTocVisible: " + isTocVisible +
                         ", isScrollFromTocClick: " + isScrollFromTocClick +
+                        ", isManualScrolling: " + isManualScrolling + // Log new flag
                         ", targetChapterIndexFromClick: " + targetChapterIndexFromClick);
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     // When scroll stops, ensure the final highlight is correct.
+                    // This applies whether it's fast scroll, click scroll, or manual scroll.
                     if (isTocVisible) {
                         if (isScrollFromTocClick && targetChapterIndexFromClick != -1) {
-                            // If it was a TOC click scroll, force highlight to the targeted chapter
                             Log.d("TOC_HIGHLIGHT_DEBUG", "Scroll from TOC click settled. Forcing highlight to chapter: " + targetChapterIndexFromClick);
                             if (targetChapterIndexFromClick != lastHighlightedChapter) {
                                 lastHighlightedChapter = targetChapterIndexFromClick;
@@ -148,33 +157,44 @@ public class FastScrollTOCHandler {
                         }
                     }
 
-                    // Reset the flag ONLY when scroll is idle and it was a click scroll
-                    if (isScrollFromTocClick) {
-                        isScrollFromTocClick = false;
-                        targetChapterIndexFromClick = -1; // Reset target
-                        Log.d("TOC_DEBUG_ACTIVITY", "isScrollFromTocClick reset to false. targetChapterIndexFromClick reset.");
-                        // Hide TOC after smooth scroll initiated by click settles
-                        if (isTocVisible) {
-                            hideTocPopupDelayed();
-                        }
-                    }
-                    // If not from TOC click, and not fast scrolling, then hide due to inactivity
-                    else if (!isFastScrollingActive && isTocVisible) {
+                    // Hide TOC logic:
+                    // Hide if:
+                    // 1. Not actively fast-scrolling.
+                    // 2. Not currently engaged in a TOC-click initiated scroll.
+                    // 3. TOC is visible.
+                    if (!isFastScrollingActive && !isScrollFromTocClick && isTocVisible) {
+                        hideTocPopupDelayed();
+                    } else if (isScrollFromTocClick && isTocVisible) {
+                        // If it was a TOC click, hide it after it settles
                         hideTocPopupDelayed();
                     }
-                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    // User is actively interacting, cancel any pending hide
-                    cancelHideToc();
-                    // If the user starts dragging manually, override any pending click-initiated scroll
+
+                    // Reset flags for next interaction
                     isScrollFromTocClick = false;
-                    targetChapterIndexFromClick = -1; // Clear target
-                    Log.d("TOC_DEBUG_ACTIVITY", "User started dragging, isScrollFromTocClick reset.");
-                    // Show TOC if user starts dragging and it's not visible
-                    if (!isTocVisible) {
-                        showTocPopup();
+                    targetChapterIndexFromClick = -1;
+                    isManualScrolling = false; // Reset manual scrolling flag
+                    Log.d("TOC_DEBUG_ACTIVITY", "Scroll settled. Flags reset.");
+
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // User is actively dragging the RecyclerView manually (not via FastScroller)
+                    if (!isFastScrollingActive) { // Crucial check: only if not already in fast scroll mode
+                        isManualScrolling = true;
+                        isScrollFromTocClick = false; // If manual drag, cancel any pending click scroll flag
+                        targetChapterIndexFromClick = -1;
+                        cancelHideToc(); // Cancel any pending hide TOC runnable
+
+                        // DO NOT show TOC popup here if it's just manual dragging.
+                        // The prompt explicitly states "only when the scrollbar is dragged directly".
+                        // The fast scroller listener handles that.
+                        Log.d("TOC_DEBUG_ACTIVITY", "Manual dragging detected. TOC should NOT appear.");
+                    } else {
+                        // If fast scrolling is active, and dragging is detected, it means the
+                        // user is using the fast scroller, so keep isManualScrolling false.
+                        Log.d("TOC_DEBUG_ACTIVITY", "Fast scrolling active, dragging confirms FastScroller interaction.");
                     }
                 } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    cancelHideToc(); // Ensure TOC stays visible during auto-scroll
+                    // During auto-scroll (e.g., after fling or smoothScrollBy/smoothScrollToPosition)
+                    cancelHideToc(); // Ensure TOC stays visible during auto-scroll initiated by fast scroll or click
                 }
             }
         });
@@ -194,21 +214,21 @@ public class FastScrollTOCHandler {
         }
 
         if (isTocVisible) {
-            cancelHideToc(); // Cancel any pending hide
-            updateTocHighlight(); // Update highlight in case scroll position changed
+            cancelHideToc(); // Cancel any pending hide if already visible
+            updateTocHighlight(); // Update highlight in case scroll position changed while visible
             return;
         }
 
-        populateTableOfContents();
+        populateTableOfContents(); // Only populate if TOC is not visible
         updateTocHighlight(); // Initial highlight before animation based on current scroll
 
         tocPopup.setVisibility(View.VISIBLE);
         tocPopup.setAlpha(0f); // Start completely transparent for animation
-        tocPopup.setTranslationX(tocPopup.getWidth());
+        tocPopup.setTranslationX(tocPopup.getWidth()); // Start off-screen to the right
 
         tocPopup.animate()
-                .alpha(1f)
-                .translationX(0)
+                .alpha(0.75f) // Fade in
+                .translationX(0) // Slide in from right
                 .setDuration(150)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -224,25 +244,27 @@ public class FastScrollTOCHandler {
         cancelHideToc(); // Ensure only one hide runnable is pending
 
         hideTocRunnable = () -> {
-            if (!isFastScrollingActive && !isScrollFromTocClick && isTocVisible) {
+            // Only hide if none of the conditions for keeping it visible are met
+            if (!isFastScrollingActive && !isScrollFromTocClick && isTocVisible && !isManualScrolling) { // Added isManualScrolling to condition
                 hideTocPopup();
-                Log.d("TOC_DEBUG_ACTIVITY", "hideTocPopupDelayed: Hiding TOC.");
+                Log.d("TOC_DEBUG_ACTIVITY", "hideTocPopupDelayed: Hiding TOC due to inactivity.");
             } else {
-                Log.d("TOC_DEBUG_ACTIVITY", "hideTocPopupDelayed: Not hiding TOC. " +
+                Log.d("TOC_DEBUG_ACTIVITY", "hideTocPopupDelayed: Not hiding TOC yet. " +
                         "isFastScrollingActive: " + isFastScrollingActive +
                         ", isTocVisible: " + isTocVisible +
-                        ", isScrollFromTocClick: " + isScrollFromTocClick);
+                        ", isScrollFromTocClick: " + isScrollFromTocClick +
+                        ", isManualScrolling: " + isManualScrolling);
             }
         };
-        recyclerView.postDelayed(hideTocRunnable, 1000);
+        recyclerView.postDelayed(hideTocRunnable, 1000); // 1-second delay
     }
 
     public void hideTocPopup() {
         if (!isTocVisible) return;
 
         tocPopup.animate()
-                .alpha(0f)
-                .translationX(tocPopup.getWidth())
+                .alpha(0f) // Fade out
+                .translationX(tocPopup.getWidth()) // Slide out to the right
                 .setDuration(150)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -306,6 +328,7 @@ public class FastScrollTOCHandler {
                 }
 
                 // The hide will be handled by onScrollStateChanged -> SCROLL_STATE_IDLE
+                // Do not hide here immediately, let the scroll settle.
             });
 
             tocContainer.addView(tocItem);
@@ -435,17 +458,21 @@ public class FastScrollTOCHandler {
 
     public void forceShowToc() {
         Log.d("TOC_DEBUG_ACTIVITY", "forceShowToc called.");
-        isFastScrollingActive = false; // Treat as if not fast scrolling
-        isScrollFromTocClick = false; // Ensure click flag is off
-        targetChapterIndexFromClick = -1; // Reset target
+        // When forcing show, we want it to behave like a direct interaction
+        isFastScrollingActive = false; // Not fast scrolling from direct interaction
+        isScrollFromTocClick = false; // Not from TOC click
+        isManualScrolling = false; // Not from manual drag
+        targetChapterIndexFromClick = -1;
         showTocPopup();
     }
 
     public void forceHideToc() {
         Log.d("TOC_DEBUG_ACTIVITY", "forceHideToc called.");
-        isFastScrollingActive = false; // Treat as if not fast scrolling
-        isScrollFromTocClick = false; // Ensure click flag is off
-        targetChapterIndexFromClick = -1; // Reset target
+        // When forcing hide, ensure all flags are off for clean slate
+        isFastScrollingActive = false;
+        isScrollFromTocClick = false;
+        isManualScrolling = false;
+        targetChapterIndexFromClick = -1;
         cancelHideToc();
         hideTocPopup();
     }
