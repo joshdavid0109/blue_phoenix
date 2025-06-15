@@ -881,7 +881,7 @@ public class AdminHomeActivity extends AppCompatActivity implements GetUserNameD
             showGetUserNameDialog();
         } else if (firstNameFromIntent != null && !firstNameFromIntent.isEmpty()) {
             currentFirstName = firstNameFromIntent;
-            welcomeTextView.setText("Hello, " + currentFirstName);
+            welcomeTextView.setText(currentFirstName);
             if (nav_username_display != null) {
                 nav_username_display.setText(currentFirstName);
             }

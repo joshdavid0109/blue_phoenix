@@ -225,15 +225,26 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             String firestoreFirstName = "";
+                            String firestoreRole = "";
                             if (document.exists()) {
                                 firestoreFirstName = document.getString("name");
                                 if (firestoreFirstName == null) {
                                     firestoreFirstName = "";
                                 }
+                                firestoreRole = document.getString("role");
+
+
                             } else {
                                 Log.w(TAG, "User document not found in Firestore.");
                             }
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+
+                            Intent intent;
+                            if (firestoreRole.equals("admin")) {
+                                intent = new Intent(LoginActivity.this, AdminHomeActivity.class);;
+                            }
+                            else {
+                                intent = new Intent(LoginActivity.this, HomeActivity.class);;
+                            }
                             intent.putExtra("USER_ID", user.getUid());
                             intent.putExtra("FIRST_NAME", firestoreFirstName);
                             intent.putExtra("IS_NEW_USER", isNewUser); // Pass the flag
